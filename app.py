@@ -39,12 +39,13 @@ def thankyou():
 @app.route('/api/attractions')
 def attractions():
     page = request.args.get('page', 0)
+    nextPage = int(page) + 1
     keyword = request.args.get('keyword', '')
     keyword = '%' + keyword + '%'
-    nextPage = int(page) * 12
+    datafrom = int(page) * 12
     dataNumPage = 12
-    sql = 'SELECT * FROM (SELECT _id,stitle,CAT2,xbody,address,info,MRT,latitude,longitude,file FROM taipei order by _id LIMIT %s,%s) as a WHERE stitle like %s '
-    val = (nextPage, dataNumPage, keyword)
+    sql = 'SELECT * FROM (SELECT _id,stitle,CAT2,xbody,address,info,MRT,latitude,longitude,file FROM taipei WHERE stitle like %s order by _id  ) as a LIMIT %s,%s'
+    val = (keyword, datafrom, dataNumPage)
     mycursor.execute(sql, val)
     sqldata = mycursor.fetchall()
     myresult = [''] * (len(sqldata))
