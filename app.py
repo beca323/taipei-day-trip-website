@@ -63,6 +63,15 @@ def attractions():
             'longitude': sqldata[k][8],
             'images': [imagesx1[0]]
         }
+
+    # 判斷下一頁------
+    sql = 'SELECT * FROM (SELECT stitle FROM taipei WHERE stitle like %s order by _id  ) as a LIMIT %s,%s'
+    val = (keyword, datafrom + 12, 1)
+    mycursor.execute(sql, val)
+    sqldata = mycursor.fetchall()
+    if sqldata == []:
+        nextPage = None
+    # ---------------
     return {'nextPage': nextPage, 'data': myresult}
 
 
