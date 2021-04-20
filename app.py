@@ -41,14 +41,12 @@ def attractions():
     page = request.args.get('page', 0)
     keyword = request.args.get('keyword', '')
     keyword = '%' + keyword + '%'
-    print(keyword)
     nextPage = int(page) * 12
     dataNumPage = 12
     sql = 'SELECT * FROM (SELECT _id,stitle,CAT2,xbody,address,info,MRT,latitude,longitude,file FROM taipei order by _id LIMIT %s,%s) as a WHERE stitle like %s '
     val = (nextPage, dataNumPage, keyword)
     mycursor.execute(sql, val)
     sqldata = mycursor.fetchall()
-    print(len(sqldata))
     myresult = [''] * (len(sqldata))
     for k in range(0, len(sqldata)):
         imagesx1 = sqldata[k][9].split(',')
