@@ -67,7 +67,7 @@ def attractions():
     return {'nextPage': nextPage, 'data': myresult}
 
 
-@app.route('/api/attractions/<int:attractionid>')
+@app.route('/api/attraction/<int:attractionid>')
 def attractionsID(attractionid):
     sql = 'SELECT _id,stitle,CAT2,xbody,address,info,MRT,latitude,longitude,file FROM taipei WHERE _id=%s'
     val = (attractionid, )
@@ -100,4 +100,5 @@ def internal_error500(error):
     return {'error': True, "message": "自訂的錯誤訊息"}
 
 
-app.run(port=3000)
+# app.run(port=3000)
+app.run(host="0.0.0.0", port=3000)
