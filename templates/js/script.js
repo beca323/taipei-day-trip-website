@@ -2,13 +2,17 @@ var nextPage = 0
 var keyword = ''
 function getData() {
   var req = new XMLHttpRequest()
-  // var urlname = 'http://0.0.0.0:3000/api/attractions?page=0'
-  var urlname = 'http://127.0.0.1:3000/api/attractions?page=' + nextPage + keyword
-  // var urlname = 'http://18.182.195.43:3000/api/attractions?page=0'
+  var urlname = 'http://0.0.0.0:3000/api/attractions?page=' + nextPage + keyword
+  // var urlname = 'http://127.0.0.1:3000/api/attractions?page=' + nextPage + keyword
+  // var urlname = 'http://18.182.195.43:3000/api/attractions?page=' + nextPage + keyword
   req.open('GET', urlname, true)
   req.onload = function () {
     var data = JSON.parse(this.responseText);
 
+    // 找不到資料時：
+    if (data.data.length == 0) {
+      noMatchData()
+    }
     for (let k = 0; k < data.data.length; k++) {
       title = data.data[k].name
       photourl = data.data[k].images[0]
@@ -63,7 +67,6 @@ function addElement(title, photourl, mrt, category, id, k) {
 
 function loadmore() {
   if (nextPage != null) {
-    // console.log(nextPage)
     getData()
   }
 }
@@ -109,8 +112,8 @@ function toSignin() {
 
 function getAttraction(id) {
   var req = new XMLHttpRequest()
-  // var urlname = 'http://0.0.0.0:3000/api/attraction/' + id
-  var urlname = 'http://127.0.0.1:3000/api/attraction/' + id
+  var urlname = 'http://0.0.0.0:3000/api/attraction/' + id
+  // var urlname = 'http://127.0.0.1:3000/api/attraction/' + id
   // var urlname = 'http://18.182.195.43:3000/api/attraction/' + id
   req.open('GET', urlname, true)
   req.onload = function () {
@@ -150,7 +153,8 @@ function scrollToLoadMore() {
     var content = document.getElementsByClassName('content')[0]
     var rect = content.getBoundingClientRect()
     var height = document.documentElement.clientHeight;
-    if ((height - rect.bottom) > 100 & TF == true) {
+    // console.log(height, rect.bottom)
+    if ((height - rect.bottom) >= 0 & TF == true) {
       TF = false
       loadmore()
       stop1sec()
@@ -169,8 +173,7 @@ function searchAttraction() {
   pic_box.innerHTML = ''
   nextPage = 0
   keyword = '&keyword=' + document.getElementById('keyword').value
-  // keyword = '&keyword=' + keyword.value
-  console.log(keyword)
+  // console.log(keyword)
   getData()
 }
 
@@ -183,3 +186,12 @@ function indexOnload() {
     }
   })
 }
+
+function noMatchData() {
+  var noMatchData = document.createElement('div')
+  noMatchData.appendChild(document.createTextNode('找不到包含 ' + keyword.replace('&keyword=', '') + ' 的景點'))
+  noMatchData.setAttribute('class', 'noMatchData')
+  document.getElementsByClassName('wrapper')[0].appendChild(noMatchData)
+}
+
+

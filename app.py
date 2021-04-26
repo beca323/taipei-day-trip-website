@@ -108,5 +108,5 @@ def internal_error500(error):
     return {'error': True, "message": "自訂的錯誤訊息"}
 
 
-app.run(port=3000)
-# app.run(host="0.0.0.0", port=3000)
+# app.run(port=3000)
+app.run(host="0.0.0.0", port=3000)

@@ -55,6 +55,7 @@ nav ul {
 }
 
 nav .website_title {
+  text-decoration: none;
   font-weight: 700;
   font-size: 30px;
   color: #448899;
@@ -142,6 +143,15 @@ nav .website_title, nav ul li {
 
 .content {
   position: relative;
+  display: flex;
+  justify-content: center;
+  transform: translateY(54px);
+}
+
+.noMatchData {
+  font-size: 20px;
+  font-weight: 700;
+  height: 200px;
   display: flex;
   justify-content: center;
 }
@@ -410,10 +420,10 @@ hr {
   .part1 .part1pic {
     min-width: 100vw;
   }
-  .welcome{
+  .welcome {
     height: 280px;
   }
-  .imgWelcome1{
+  .imgWelcome1 {
     height: 50vw;
     max-height: 280px;
     bottom: 0;
