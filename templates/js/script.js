@@ -1,7 +1,7 @@
 function getData() {
   var req = new XMLHttpRequest()
-  // var urlname = 'https://padax.github.io/taipei-day-trip-resources/taipei-attractions.json'
-  var urlname = 'http://0.0.0.0:3000/api/attractions?page=0'
+  // var urlname = 'http://0.0.0.0:3000/api/attractions?page=0'
+  var urlname = 'http://18.182.195.43:3000/api/attractions?page=0'
   req.open('GET', urlname, true)
   req.onload = function () {
     var data = JSON.parse(this.responseText);
@@ -11,19 +11,18 @@ function getData() {
       photourl = data.data[k].images[0]
       mrt = data.data[k].mrt
       category = data.data[k].category
-
-      // console.log(k)
-      // console.log(title, mrt)
-      addElement(title, photourl, mrt, category, k)
+      id = data.data[k].id
+      addElement(title, photourl, mrt, category, id, k)
     }
   }
   req.send()
 }
 
-function addElement(title, photourl, mrt, category, k) {
+function addElement(title, photourl, mrt, category, id, k) {
 
   // 卡片 框框
-  var addPicCard = document.createElement('div')
+  var addPicCard = document.createElement('a')
+  addPicCard.setAttribute('href', '/attraction/' + id)
   addPicCard.setAttribute('class', 'pic_card')
   addPicCard.setAttribute('id', 'pic' + k)
   document.getElementById('boxID').appendChild(addPicCard)
@@ -57,7 +56,7 @@ function addElement(title, photourl, mrt, category, k) {
   document.getElementById('subTxt' + k).appendChild(newSubTxtCategory)
 }
 
-getData()
+// getData()
 
 
 var nowPost = 12
@@ -76,33 +75,23 @@ function loadmore() {
 }
 
 function loginDialog() {
-  // 顯示 Dialog
+  // 遮起來
+  var getBody = document.getElementsByTagName('body')
+  getBody[0].classList.add('mask')
+
+  // Dialog打開
   var dialogContainer = document.getElementById('dialogContainer')
   dialogContainer.style.display = 'block'
-
-  // 卡住不准滾
-  var wrapper = document.getElementById('wrapper')
-  wrapper.classList.add('mask')
-  wrapper.style.height = '100vh'
-  wrapper.style.overflow = 'hidden'
-  var footer = document.getElementsByTagName('footer')
-  footer[0].style.display = 'none'
 }
 
 function closeBtn() {
-  // 滾吧
-  var wrapper = document.getElementById('wrapper')
-  wrapper.classList.add('mask')
-  wrapper.style.height = ''
-  wrapper.style.overflow = 'auto'
-  var footer = document.getElementsByTagName('footer')
-  footer[0].style.display = 'block'
+  // 拿掉遮罩
+  var getBody = document.getElementsByTagName('body')
+  getBody[0].classList.remove('mask')
 
   // Dialog關起來
   var dialogContainer = document.getElementById('dialogContainer')
   dialogContainer.style.display = 'none'
-  var wrapper = document.getElementById('wrapper')
-  wrapper.classList.remove('mask')
 }
 
 
@@ -122,4 +111,32 @@ function toSignin() {
     logOrSign = true
     getName.style.display = 'none'
   }
+}
+
+function getAttraction(id) {
+  var req = new XMLHttpRequest()
+  // var urlname = 'http://0.0.0.0:3000/api/attraction/' + id
+  var urlname = 'http://18.182.195.43:3000/api/attraction/' + id
+  req.open('GET', urlname, true)
+  req.onload = function () {
+    var data = JSON.parse(this.responseText);
+    data = data.data[0]
+
+    var title = document.getElementsByClassName('title')[0]
+    title.innerHTML = data.name
+    var cat = document.getElementsByClassName('cat')[0]
+    cat.innerHTML = data.category
+    // var mrt = document.getElementsByClassName('mrt')[0]
+    // mrt.innerHTML = data.mrt
+    getAttractionInfo('mrt')
+  }
+  req.send()
+}
+
+function getAttractionInfo(varName) {
+  var dumVarName = document.getElementsByClassName(varName)[0]
+  console.log(dumVarName)
+  console.log(varName)
+  dumVarName.innerHTML = data.mrt
+
 }

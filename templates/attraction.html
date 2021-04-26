@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="../css/style.css">
+  <script src="../js/script.js"></script>
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+  <title>台北一日遊</title>
+</head>
+
+<body onload="getAttraction('{{ id }}')">
+  <div class="wrapper" id="wrapper">
+    <nav>
+      <div class="navcontain">
+        <span class="website_title">台北一日遊</span>
+        <ul>
+          <li>預定行程</li>
+          <li onclick="loginDialog()">登入/註冊</li>
+        </ul>
+      </div>
+    </nav>
+    <div class="content">
+      <div class="part1">
+        <div class="part1pic">
+          <img src="http://www.travel.taipei/d_upload_ttn/sceneadmin/pic/11000848.jpg">
+        </div>
+        <div class="part1basic">
+          <div class="title"></div>
+          <span class="cat"></span> at <span class="mrt"></span>
+          <div class="grayArea">
+            <div class="title">訂購導覽行程</div>
+            <div>以此景點為中心的一日行程，帶您探索城市角落故事</div>
+            <div>
+              <span class="title">選擇日期：</span>
+              <input type="date">
+            </div>
+            <div>
+              <span class="title">選擇時間：</span>
+              <input type="radio" name="dayOrNight" id="day" checked="checked">
+              <label for="day"><span></span>上半天</label>
+              &emsp;
+              <input type="radio" name="dayOrNight" id="night">
+              <label for="night"><span></span>下半天</label>
+            </div>
+            <div>
+              <span class="title">導覽費用：</span>
+              <span>新台幣 <span>2000</span> 元</span>
+            </div>
+            <button class="bookBtn">開始預定行程</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="content">
+      <div class="part2">
+        <div class="introduction">
+          景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹，景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹。景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹，景點介紹景點介紹景點介紹景點介紹景點介紹。
+        </div>
+        <div>
+          <div class="title">景點地址：</div>
+          <div>地址地址地址地址地址地址地址地址</div>
+        </div>
+        <div>
+          <div class="title">交通方式：</div>
+          <div>交通方式交通方式交通方式交通方式交通方式交通方式交通方式交通方式交通方式</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    COPYRIGHT © 2021 台北一日遊
+  </footer>
+  <div id="dialogContainer">
+    <div class="dialog">
+      <div id="closeBtn" onclick="closeBtn()">✕</div>
+      <div class="dialogTitle">登入會員帳號</div>
+      <input type="text" id="getName" class="indexInput" placeholder="輸入姓名">
+      <input type="text" class="indexInput" placeholder="輸入電子信箱">
+      <input type="text" class="indexInput" placeholder="輸入密碼">
+      <div>
+        <button class="loginBtn">登入帳戶</button>
+      </div>
+      <span id="toSignin" onclick="toSignin()">還沒有帳戶？點此註冊</span>
+    </div>
+  </div>
+</body>
+
+</html>
