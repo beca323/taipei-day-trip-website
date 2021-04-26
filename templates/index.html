@@ -11,7 +11,7 @@
   <title>台北一日遊</title>
 </head>
 
-<body onload="getData()">
+<body onload="indexOnload()">
   <div class="wrapper" id="wrapper">
     <nav>
       <div class="navcontain">
@@ -27,8 +27,8 @@
         <div class="intro">輕鬆享受台北一日悠閒</div>
         <div class="intro subintro">探索每個角落，體驗城市的深度旅遊行程</div>
         <div class="searchBox">
-          <input type="text" class="indexInput" placeholder="輸入景點名稱查詢">
-          <svg width="60" height="46" viewBox="0 0 60 46" fill="none" xmlns="http://www.w3.org/2000/svg"
+          <input type="text" id="keyword" class="indexInput" placeholder="輸入景點名稱查詢" >
+          <svg onclick="searchAttraction()" width="60" height="46" viewBox="0 0 60 46" fill="none" xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink">
             <rect x="15" y="8" width="30" height="30" fill="url(#pattern0)" />
             <defs>

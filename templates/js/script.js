@@ -1,12 +1,15 @@
+var nextPage = 0
+var keyword = ''
 function getData() {
   var req = new XMLHttpRequest()
   // var urlname = 'http://0.0.0.0:3000/api/attractions?page=0'
-  var urlname = 'http://18.182.195.43:3000/api/attractions?page=0'
+  var urlname = 'http://127.0.0.1:3000/api/attractions?page=' + nextPage + keyword
+  // var urlname = 'http://18.182.195.43:3000/api/attractions?page=0'
   req.open('GET', urlname, true)
   req.onload = function () {
     var data = JSON.parse(this.responseText);
-    for (let k = nowPostFrom; k < nowPost; k++) {
 
+    for (let k = 0; k < data.data.length; k++) {
       title = data.data[k].name
       photourl = data.data[k].images[0]
       mrt = data.data[k].mrt
@@ -14,12 +17,14 @@ function getData() {
       id = data.data[k].id
       addElement(title, photourl, mrt, category, id, k)
     }
+    nextPage = data.nextPage
   }
   req.send()
+  scrollToLoadMore()
 }
 
 function addElement(title, photourl, mrt, category, id, k) {
-
+  k = nextPage * 12 + k
   // 卡片 框框
   var addPicCard = document.createElement('a')
   addPicCard.setAttribute('href', '/attraction/' + id)
@@ -56,22 +61,11 @@ function addElement(title, photourl, mrt, category, id, k) {
   document.getElementById('subTxt' + k).appendChild(newSubTxtCategory)
 }
 
-// getData()
-
-
-var nowPost = 12
-var nowPostFrom = nowPost - 12
-
 function loadmore() {
-  nowPostFrom = nowPost
-  nowPost += 12
-  if (nowPost <= 283) {
-    getData()
-  } else if (nowPost === 288) {
-    nowPost = 283
+  if (nextPage != null) {
+    // console.log(nextPage)
     getData()
   }
-  console.log(nowPost)
 }
 
 function loginDialog() {
@@ -116,7 +110,8 @@ function toSignin() {
 function getAttraction(id) {
   var req = new XMLHttpRequest()
   // var urlname = 'http://0.0.0.0:3000/api/attraction/' + id
-  var urlname = 'http://18.182.195.43:3000/api/attraction/' + id
+  var urlname = 'http://127.0.0.1:3000/api/attraction/' + id
+  // var urlname = 'http://18.182.195.43:3000/api/attraction/' + id
   req.open('GET', urlname, true)
   req.onload = function () {
     var data = JSON.parse(this.responseText);
@@ -131,6 +126,7 @@ function getAttraction(id) {
     getAttractionInfo('mrt')
   }
   req.send()
+
 }
 
 function getAttractionInfo(varName) {
@@ -139,4 +135,51 @@ function getAttractionInfo(varName) {
   console.log(varName)
   dumVarName.innerHTML = data.mrt
 
+}
+
+function test_rect() {
+  var content = document.getElementsByClassName('content')[0]
+  var rect = content.getBoundingClientRect()
+  // console.log(rect.top)
+  // console.log(rect.bottom)
+}
+
+var TF = true
+function scrollToLoadMore() {
+  window.addEventListener('scroll', function () {
+    var content = document.getElementsByClassName('content')[0]
+    var rect = content.getBoundingClientRect()
+    var height = document.documentElement.clientHeight;
+    if ((height - rect.bottom) > 100 & TF == true) {
+      TF = false
+      loadmore()
+      stop1sec()
+    }
+  })
+}
+function stop1sec() {
+  setTimeout(function () {
+    TF = true
+    scrollToLoadMore()
+  }, 100)
+}
+
+function searchAttraction() {
+  var pic_box = document.getElementsByClassName('pic_box')[0]
+  pic_box.innerHTML = ''
+  nextPage = 0
+  keyword = '&keyword=' + document.getElementById('keyword').value
+  // keyword = '&keyword=' + keyword.value
+  console.log(keyword)
+  getData()
+}
+
+function indexOnload() {
+  getData()
+  var keyword = document.getElementById('keyword')
+  keyword.addEventListener("keyup", function (event) {
+    if (event.keyCode === 13) {
+      searchAttraction()
+    }
+  })
 }

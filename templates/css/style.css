@@ -410,6 +410,15 @@ hr {
   .part1 .part1pic {
     min-width: 100vw;
   }
+  .welcome{
+    height: 280px;
+  }
+  .imgWelcome1{
+    height: 50vw;
+    max-height: 280px;
+    bottom: 0;
+    right: -100px;
+  }
 }
 
 @media (max-width: 600px) {
