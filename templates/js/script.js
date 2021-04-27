@@ -4,39 +4,40 @@ var keyword = ''
 // var url = 'http://127.0.0.1:3000/'
 var url = 'http://18.182.195.43:3000/'
 function getData() {
-  var req = new XMLHttpRequest()
-  // var urlname = url + 'api/attractions?page=' + nextPage + keyword
-  // var urlname = url + 'api/attractions?page=' + nextPage + keyword
-  var urlname = url + 'api/attractions?page=' + nextPage + keyword
-  req.open('GET', urlname, true)
-  req.onload = function () {
-    var data = JSON.parse(this.responseText);
+  return new Promise((resolve, reject) => {
+    var req = new XMLHttpRequest()
+    var urlname = url + 'api/attractions?page=' + nextPage + keyword
+    req.open('GET', urlname, true)
+    req.onload = function () {
+      var data = JSON.parse(this.responseText);
 
-    // 找不到資料時：
-    if (data.data.length == 0) {
-      noMatchData()
-    }
-    // 外面的大框框
-    var pic_box = document.getElementsByClassName('pic_box')[0]
-    if (!pic_box) {
-      var pic_box = document.createElement('div')
-      pic_box.setAttribute('class', 'pic_box')
-      pic_box.setAttribute('id', 'boxID')
-      document.getElementsByClassName('content')[0].appendChild(pic_box)
-    }
+      // 找不到資料時：
+      if (data.data.length == 0) {
+        noMatchData()
+      }
+      // 外面的大框框
+      var pic_box = document.getElementsByClassName('pic_box')[0]
+      if (!pic_box) {
+        var pic_box = document.createElement('div')
+        pic_box.setAttribute('class', 'pic_box')
+        pic_box.setAttribute('id', 'boxID')
+        document.getElementsByClassName('content')[0].appendChild(pic_box)
+      }
 
-    for (let k = 0; k < data.data.length; k++) {
-      title = data.data[k].name
-      photourl = data.data[k].images[0]
-      mrt = data.data[k].mrt
-      category = data.data[k].category
-      id = data.data[k].id
-      addElement(title, photourl, mrt, category, id, k)
+      for (let k = 0; k < data.data.length; k++) {
+        title = data.data[k].name
+        photourl = data.data[k].images[0]
+        mrt = data.data[k].mrt
+        category = data.data[k].category
+        id = data.data[k].id
+        addElement(title, photourl, mrt, category, id, k)
+      }
+      nextPage = data.nextPage
+      resolve()
     }
-    nextPage = data.nextPage
-  }
-  req.send()
-  scrollToLoadMore()
+    req.send()
+  })
+  // scrollToLoadMore()
 }
 
 function addElement(title, photourl, mrt, category, id, k) {
@@ -78,11 +79,7 @@ function addElement(title, photourl, mrt, category, id, k) {
   document.getElementById('subTxt' + k).appendChild(newSubTxtCategory)
 }
 
-function loadmore() {
-  if (nextPage != null) {
-    getData()
-  }
-}
+
 
 function loginDialog() {
   // 遮起來
@@ -125,8 +122,6 @@ function toSignin() {
 
 function getAttraction(id) {
   var req = new XMLHttpRequest()
-  // var urlname = url+'api/attraction/' + id
-  // var urlname = url+'api/attraction/' + id
   var urlname = url + 'api/attraction/' + id
   req.open('GET', urlname, true)
   req.onload = function () {
@@ -153,6 +148,33 @@ function getAttractionInfo(varName) {
 
 }
 
+function indexOnload() {
+  // getData()
+  var keyword = document.getElementById('keyword')
+  keyword.addEventListener("keyup", function (event) {
+    if (event.keyCode === 13) {
+      searchAttraction()
+    }
+  })
+  let promise = getData()
+  promise.then(function () {
+    TF = true
+    scrollToLoadMore()
+  })
+}
+
+function loadmore() {
+  if (nextPage != null) {
+    // getData()
+    let promise = getData()
+    promise.then(() => {
+      TF = true
+      scrollToLoadMore()
+    }
+    )
+  }
+}
+
 var TF = true
 function scrollToLoadMore() {
   window.addEventListener('scroll', function () {
@@ -163,15 +185,8 @@ function scrollToLoadMore() {
     if ((height - rect.bottom) >= 0 & TF == true) {
       TF = false
       loadmore()
-      stop1sec()
     }
   })
-}
-function stop1sec() {
-  setTimeout(function () {
-    TF = true
-    scrollToLoadMore()
-  }, 100)
 }
 
 function searchAttraction() {
@@ -188,15 +203,7 @@ function searchAttraction() {
   getData()
 }
 
-function indexOnload() {
-  getData()
-  var keyword = document.getElementById('keyword')
-  keyword.addEventListener("keyup", function (event) {
-    if (event.keyCode === 13) {
-      searchAttraction()
-    }
-  })
-}
+
 
 function noMatchData() {
   var n = document.getElementsByClassName('noMatchData')[0]
