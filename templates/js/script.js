@@ -1,8 +1,8 @@
 var nextPage = 0
 var keyword = ''
-var url = 'http://0.0.0.0:3000/'
+// var url = 'http://0.0.0.0:3000/'
 // var url = 'http://127.0.0.1:3000/'
-// var url = 'http://18.182.195.43:3000/'
+var url = 'http://18.182.195.43:3000/'
 function getData() {
   return new Promise((resolve, reject) => {
     var req = new XMLHttpRequest()
