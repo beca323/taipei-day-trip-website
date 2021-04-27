@@ -1,8 +1,8 @@
 var nextPage = 0
 var keyword = ''
-// var url = 'http://0.0.0.0:3000/'
+var url = 'http://0.0.0.0:3000/'
 // var url = 'http://127.0.0.1:3000/'
-var url = 'http://18.182.195.43:3000/'
+// var url = 'http://18.182.195.43:3000/'
 function getData() {
   var req = new XMLHttpRequest()
   // var urlname = url + 'api/attractions?page=' + nextPage + keyword
@@ -17,10 +17,13 @@ function getData() {
       noMatchData()
     }
     // 外面的大框框
-    var pic_box = document.createElement('div')
-    pic_box.setAttribute('class', 'pic_box')
-    pic_box.setAttribute('id', 'boxID')
-    document.getElementsByClassName('content')[0].appendChild(pic_box)
+    var pic_box = document.getElementsByClassName('pic_box')[0]
+    if (!pic_box) {
+      var pic_box = document.createElement('div')
+      pic_box.setAttribute('class', 'pic_box')
+      pic_box.setAttribute('id', 'boxID')
+      document.getElementsByClassName('content')[0].appendChild(pic_box)
+    }
 
     for (let k = 0; k < data.data.length; k++) {
       title = data.data[k].name
@@ -196,7 +199,11 @@ function indexOnload() {
 }
 
 function noMatchData() {
-
+  var n = document.getElementsByClassName('noMatchData')[0]
+  if (n) {
+    // n.remove()
+    console.log('沒砍掉啊')
+  }
   var noMatchData = document.createElement('div')
   noMatchData.appendChild(document.createTextNode('找不到包含 ' + keyword.replace('&keyword=', '') + ' 的景點'))
   noMatchData.setAttribute('class', 'noMatchData')
