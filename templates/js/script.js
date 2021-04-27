@@ -1,10 +1,13 @@
 var nextPage = 0
 var keyword = ''
+// var url = 'http://0.0.0.0:3000/'
+// var url = 'http://127.0.0.1:3000/'
+var url = 'http://18.182.195.43:3000/'
 function getData() {
   var req = new XMLHttpRequest()
-  var urlname = 'http://0.0.0.0:3000/api/attractions?page=' + nextPage + keyword
-  // var urlname = 'http://127.0.0.1:3000/api/attractions?page=' + nextPage + keyword
-  // var urlname = 'http://18.182.195.43:3000/api/attractions?page=' + nextPage + keyword
+  // var urlname = url + 'api/attractions?page=' + nextPage + keyword
+  // var urlname = url + 'api/attractions?page=' + nextPage + keyword
+  var urlname = url + 'api/attractions?page=' + nextPage + keyword
   req.open('GET', urlname, true)
   req.onload = function () {
     var data = JSON.parse(this.responseText);
@@ -13,6 +16,12 @@ function getData() {
     if (data.data.length == 0) {
       noMatchData()
     }
+    // 外面的大框框
+    var pic_box = document.createElement('div')
+    pic_box.setAttribute('class', 'pic_box')
+    pic_box.setAttribute('id', 'boxID')
+    document.getElementsByClassName('content')[0].appendChild(pic_box)
+
     for (let k = 0; k < data.data.length; k++) {
       title = data.data[k].name
       photourl = data.data[k].images[0]
@@ -29,6 +38,7 @@ function getData() {
 
 function addElement(title, photourl, mrt, category, id, k) {
   k = nextPage * 12 + k
+
   // 卡片 框框
   var addPicCard = document.createElement('a')
   addPicCard.setAttribute('href', '/attraction/' + id)
@@ -112,9 +122,9 @@ function toSignin() {
 
 function getAttraction(id) {
   var req = new XMLHttpRequest()
-  var urlname = 'http://0.0.0.0:3000/api/attraction/' + id
-  // var urlname = 'http://127.0.0.1:3000/api/attraction/' + id
-  // var urlname = 'http://18.182.195.43:3000/api/attraction/' + id
+  // var urlname = url+'api/attraction/' + id
+  // var urlname = url+'api/attraction/' + id
+  var urlname = url + 'api/attraction/' + id
   req.open('GET', urlname, true)
   req.onload = function () {
     var data = JSON.parse(this.responseText);
@@ -140,13 +150,6 @@ function getAttractionInfo(varName) {
 
 }
 
-function test_rect() {
-  var content = document.getElementsByClassName('content')[0]
-  var rect = content.getBoundingClientRect()
-  // console.log(rect.top)
-  // console.log(rect.bottom)
-}
-
 var TF = true
 function scrollToLoadMore() {
   window.addEventListener('scroll', function () {
@@ -169,11 +172,16 @@ function stop1sec() {
 }
 
 function searchAttraction() {
-  var pic_box = document.getElementsByClassName('pic_box')[0]
-  pic_box.innerHTML = ''
+  var p = document.getElementsByClassName('pic_box')[0]
+  if (p) {
+    p.remove()
+  }
+  var n = document.getElementsByClassName('noMatchData')[0]
+  if (n) {
+    n.remove()
+  }
   nextPage = 0
   keyword = '&keyword=' + document.getElementById('keyword').value
-  // console.log(keyword)
   getData()
 }
 
@@ -188,6 +196,7 @@ function indexOnload() {
 }
 
 function noMatchData() {
+
   var noMatchData = document.createElement('div')
   noMatchData.appendChild(document.createTextNode('找不到包含 ' + keyword.replace('&keyword=', '') + ' 的景點'))
   noMatchData.setAttribute('class', 'noMatchData')
