@@ -5,6 +5,7 @@ var keyword = ''
 var url = 'http://18.182.195.43:3000/'
 function getData() {
   return new Promise((resolve, reject) => {
+
     var req = new XMLHttpRequest()
     var urlname = url + 'api/attractions?page=' + nextPage + keyword
     req.open('GET', urlname, true)
@@ -189,7 +190,9 @@ function scrollToLoadMore() {
   })
 }
 
+
 function searchAttraction() {
+
   var p = document.getElementsByClassName('pic_box')[0]
   if (p) {
     p.remove()
@@ -206,6 +209,8 @@ function searchAttraction() {
     TF = true
     scrollToLoadMore()
   })
+
+  sessionStorage.setItem('keyword', keyword.replace('&keyword=', ''))
 
 }
 

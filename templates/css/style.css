@@ -172,6 +172,7 @@ nav .website_title, nav ul li {
   /* box-shadow: #cccccc 1px 1px 4px; */
   margin: 15px;
   border-radius: 5px;
+  text-decoration: none;
 }
 
 .pic {
