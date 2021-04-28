@@ -4,12 +4,13 @@ import json
 mydb = mysql.connector.connect(host='localhost',
                                user='root',
                                password='password',
-                               database='website')
+                               database='website',
+                               auth_plugin='mysql_native_password')
 
 mycursor = mydb.cursor()
 # sql = 'INSERT INTO taipei (info	,stitle	,xpostDate) VALUES (%s, %s, %s)'
 
-with open('./data/taipei-attractions.json') as f:
+with open('./data/taipei-attractions.json',encoding="utf-8") as f:
     data = json.load(f)
 
 item = [''] * 21
