@@ -11,7 +11,7 @@
   <title>台北一日遊</title>
 </head>
 
-<body onload="getAttraction('{{ id }}')">
+<body onload=" attractionOnload('{{ id }}')">
   <div class="wrapper" id="wrapper">
     <nav>
       <div class="navcontain">
@@ -22,10 +22,12 @@
         </ul>
       </div>
     </nav>
+    <div class="fakenav"></div>
+
     <div class="content">
       <div class="part1">
         <div class="part1pic">
-          <img src="http://www.travel.taipei/d_upload_ttn/sceneadmin/pic/11000848.jpg">
+          <img class="part1Img" src="">
         </div>
         <div class="part1basic">
           <div class="title"></div>
@@ -62,11 +64,11 @@
         </div>
         <div>
           <div class="title">景點地址：</div>
-          <div>地址地址地址地址地址地址地址地址</div>
+          <div class="address">地址地址地址地址地址地址地址地址</div>
         </div>
         <div>
           <div class="title">交通方式：</div>
-          <div>交通方式交通方式交通方式交通方式交通方式交通方式交通方式交通方式交通方式</div>
+          <div class="transport">交通方式交通方式交通方式交通方式交通方式交通方式交通方式交通方式交通方式</div>
         </div>
       </div>
     </div>

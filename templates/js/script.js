@@ -3,6 +3,7 @@ var keyword = ''
 // var url = 'http://0.0.0.0:3000/'
 // var url = 'http://127.0.0.1:3000/'
 var url = 'http://18.182.195.43:3000/'
+var nextPic = []
 function getData() {
   return new Promise((resolve, reject) => {
 
@@ -121,33 +122,40 @@ function toSignin() {
   }
 }
 
+var changeImg = 0
+var imgCount = 0
 function getAttraction(id) {
-  var req = new XMLHttpRequest()
-  var urlname = url + 'api/attraction/' + id
-  req.open('GET', urlname, true)
-  req.onload = function () {
-    var data = JSON.parse(this.responseText);
-    data = data.data[0]
+  return new Promise((resolve, reject) => {
+    var req = new XMLHttpRequest()
+    var urlname = url + 'api/attraction/' + id
+    req.open('GET', urlname, true)
+    req.onload = function () {
+      var data = JSON.parse(this.responseText);
+      imgCount = data.data[0].images[0].length
+      // console.log(changeImg, imgCount)
+      nextPic = data.data[0].images[0]
+      document.getElementsByClassName('part1Img')[0].src = data.data[0].images[0][changeImg]
 
-    var title = document.getElementsByClassName('title')[0]
-    title.innerHTML = data.name
-    var cat = document.getElementsByClassName('cat')[0]
-    cat.innerHTML = data.category
-    // var mrt = document.getElementsByClassName('mrt')[0]
-    // mrt.innerHTML = data.mrt
-    getAttractionInfo('mrt')
-  }
-  req.send()
+      // getAttractionInfo( class名稱 , 對應data裡面 key的名稱 )
+      getAttractionInfo('title', 'name')
+      getAttractionInfo('cat', 'category')
+      getAttractionInfo('mrt', 'mrt')
+      getAttractionInfo('introduction', 'description')
+      getAttractionInfo('address', 'address')
+      getAttractionInfo('transport', 'transport')
+
+      function getAttractionInfo(varName, keyName) {
+        document.getElementsByClassName(varName)[0].innerHTML = data.data[0][keyName]
+      }
+
+      addElementPicCircle(changeImg, imgCount)
+      resolve()
+    }
+    req.send()
+  })
 
 }
 
-function getAttractionInfo(varName) {
-  var dumVarName = document.getElementsByClassName(varName)[0]
-  console.log(dumVarName)
-  console.log(varName)
-  dumVarName.innerHTML = data.mrt
-
-}
 
 function indexOnload() {
   // getData()
@@ -163,7 +171,35 @@ function indexOnload() {
     scrollToLoadMore()
   })
 }
-
+function attractionOnload(id) {
+  // getAttraction(id)
+  let promise = getAttraction(id)
+  promise.then(function () {
+    AEL()
+  })
+}
+function AEL() {
+  window.addEventListener('keyup', function (e) {
+    if (e.keyCode === 39) {
+      var tt = document.getElementById('circle' + changeImg)
+      tt.style.background = 'white'
+      changeImg += 1
+      changeImg = Math.abs(changeImg) % imgCount
+      getImg(changeImg)
+    } else if (e.keyCode === 37) {
+      var tt = document.getElementById('circle' + changeImg)
+      tt.style.background = 'white'
+      changeImg -= 1
+      changeImg = Math.abs(imgCount + changeImg) % imgCount
+      getImg(changeImg)
+    }
+  })
+}
+function getImg(changeImg) {
+  var tt = document.getElementById('circle' + changeImg)
+  tt.style.background = 'black'
+  document.getElementsByClassName('part1Img')[0].src = nextPic[changeImg]
+}
 function loadmore() {
   if (nextPage != null) {
     // getData()
@@ -218,14 +254,35 @@ function searchAttraction() {
 
 function noMatchData() {
   var n = document.getElementsByClassName('noMatchData')[0]
-  if (n) {
-    // n.remove()
-    console.log('沒砍掉啊')
-  }
   var noMatchData = document.createElement('div')
   noMatchData.appendChild(document.createTextNode('找不到包含 ' + keyword.replace('&keyword=', '') + ' 的景點'))
   noMatchData.setAttribute('class', 'noMatchData')
   document.getElementsByClassName('wrapper')[0].appendChild(noMatchData)
 }
 
+function addElementPicCircle(changeImg, imgCount) {
+  // 小白點們 有黑有白啦
+  var circlesContainer = document.createElement('div')
+  circlesContainer.setAttribute('class', 'circlesContainer')
+  document.getElementsByClassName('part1pic')[0].appendChild(circlesContainer)
+  for (let k = 0; k < imgCount; k++) {
+    var littleCircle = document.createElement('div')
+    littleCircle.setAttribute('class', 'littleCircle')
+    littleCircle.setAttribute('id', 'circle' + k)
+    document.getElementsByClassName('circlesContainer')[0].appendChild(littleCircle)
+  }
+  var tt = document.getElementById('circle' + changeImg)
+  tt.style.background = 'black'
 
+  // 左右圈圈
+  var leftCircle = document.createElement('div')
+  leftCircle.setAttribute('class', 'LRcirlce')
+  leftCircle.setAttribute('id', 'leftCircle')
+  leftCircle.setAttribute('onclick', '')
+  document.getElementsByClassName('part1pic')[0].appendChild(leftCircle)
+  var rightCircle = document.createElement('div')
+  rightCircle.setAttribute('class', 'LRcirlce')
+  rightCircle.setAttribute('id', 'rightCircle')
+  document.getElementsByClassName('part1pic')[0].appendChild(rightCircle)
+
+}

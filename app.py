@@ -93,7 +93,7 @@ def attractionsID(attractionid):
         'mrt': sqldata[0][6],
         'latitude': sqldata[0][7],
         'longitude': sqldata[0][8],
-        'images': [imagesx1[0]]
+        'images': [imagesx1]
     }
     return {'data': myresult}
 
