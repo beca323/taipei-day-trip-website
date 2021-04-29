@@ -1,8 +1,8 @@
 var nextPage = 0
 var keyword = ''
-// var url = 'http://0.0.0.0:3000/'
+var url = 'http://0.0.0.0:3000/'
 // var url = 'http://127.0.0.1:3000/'
-var url = 'http://18.182.195.43:3000/'
+// var url = 'http://18.182.195.43:3000/'
 var nextPic = []
 function getData() {
   return new Promise((resolve, reject) => {
@@ -179,21 +179,25 @@ function attractionOnload(id) {
   })
 }
 function AEL() {
-  window.addEventListener('keyup', function (e) {
-    if (e.keyCode === 39) {
-      var tt = document.getElementById('circle' + changeImg)
-      tt.style.background = 'white'
-      changeImg += 1
-      changeImg = Math.abs(changeImg) % imgCount
-      getImg(changeImg)
-    } else if (e.keyCode === 37) {
-      var tt = document.getElementById('circle' + changeImg)
-      tt.style.background = 'white'
-      changeImg -= 1
-      changeImg = Math.abs(imgCount + changeImg) % imgCount
-      getImg(changeImg)
-    }
+  window.addEventListener('keyup', function (e, arrow) {
+    arrow = ''
+    subAEL(e, arrow)
   })
+}
+function subAEL(e, arrow) {
+  if (e.keyCode === 39 || arrow === 'R') {
+    var tt = document.getElementById('circle' + changeImg)
+    tt.style.background = 'white'
+    changeImg += 1
+    changeImg = Math.abs(changeImg) % imgCount
+    getImg(changeImg)
+  } else if (e.keyCode === 37 || arrow === 'L') {
+    var tt = document.getElementById('circle' + changeImg)
+    tt.style.background = 'white'
+    changeImg -= 1
+    changeImg = Math.abs(imgCount + changeImg) % imgCount
+    getImg(changeImg)
+  }
 }
 function getImg(changeImg) {
   var tt = document.getElementById('circle' + changeImg)
@@ -278,11 +282,12 @@ function addElementPicCircle(changeImg, imgCount) {
   var leftCircle = document.createElement('div')
   leftCircle.setAttribute('class', 'LRcirlce')
   leftCircle.setAttribute('id', 'leftCircle')
-  leftCircle.setAttribute('onclick', '')
+  leftCircle.setAttribute('onclick', "subAEL('','L')")
   document.getElementsByClassName('part1pic')[0].appendChild(leftCircle)
   var rightCircle = document.createElement('div')
   rightCircle.setAttribute('class', 'LRcirlce')
   rightCircle.setAttribute('id', 'rightCircle')
+  rightCircle.setAttribute('onclick', "subAEL('','R')")
   document.getElementsByClassName('part1pic')[0].appendChild(rightCircle)
 
 }
