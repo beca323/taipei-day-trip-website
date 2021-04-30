@@ -386,6 +386,10 @@ footer {
   opacity: 0.75;
 }
 
+.part1 #leftCircle:hover, .part1 #rightCircle:hover {
+  opacity: 1;
+}
+
 .part1 #rightCircle {
   right: 0;
   transform: translateY(-50%);
