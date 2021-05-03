@@ -11,21 +11,25 @@
   <title>台北一日遊</title>
 </head>
 
-<body onload="getAttraction('{{ id }}')">
+<body onload=" attractionOnload('{{ id }}')">
   <div class="wrapper" id="wrapper">
     <nav>
       <div class="navcontain">
         <a href="/" class="website_title">台北一日遊</a>
         <ul>
-          <li>預定行程</li>
+          <li><a href="/booking">預定行程</a></li>
           <li onclick="loginDialog()">登入/註冊</li>
         </ul>
       </div>
     </nav>
+    <div class="fakenav"></div>
+
     <div class="content">
       <div class="part1">
         <div class="part1pic">
-          <img src="http://www.travel.taipei/d_upload_ttn/sceneadmin/pic/11000848.jpg">
+          <img class="part1Img picPre" src="">
+          <img class="part1Img picNow" src="">
+          <img class="part1Img picNext" src="" alt="">
         </div>
         <div class="part1basic">
           <div class="title"></div>
@@ -39,15 +43,15 @@
             </div>
             <div>
               <span class="title">選擇時間：</span>
-              <input type="radio" name="dayOrNight" id="day" checked="checked">
+              <input type="radio" name="dayOrNight" onchange="howMuch()" id="day" checked="checked" value="day">
               <label for="day"><span></span>上半天</label>
               &emsp;
-              <input type="radio" name="dayOrNight" id="night">
+              <input type="radio" name="dayOrNight" onchange="howMuch()" id="night" value="night">
               <label for="night"><span></span>下半天</label>
             </div>
             <div>
               <span class="title">導覽費用：</span>
-              <span>新台幣 <span>2000</span> 元</span>
+              <span>新台幣 <span id="price">2000</span> 元</span>
             </div>
             <button class="bookBtn">開始預定行程</button>
           </div>
@@ -57,16 +61,14 @@
     <hr>
     <div class="content">
       <div class="part2">
-        <div class="introduction">
-          景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹，景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹。景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹景點介紹，景點介紹景點介紹景點介紹景點介紹景點介紹。
-        </div>
+        <div class="introduction"></div>
         <div>
           <div class="title">景點地址：</div>
-          <div>地址地址地址地址地址地址地址地址</div>
+          <div class="address"></div>
         </div>
         <div>
           <div class="title">交通方式：</div>
-          <div>交通方式交通方式交通方式交通方式交通方式交通方式交通方式交通方式交通方式</div>
+          <div class="transport"></div>
         </div>
       </div>
     </div>

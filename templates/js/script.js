@@ -3,6 +3,7 @@ var keyword = ''
 // var url = 'http://0.0.0.0:3000/'
 // var url = 'http://127.0.0.1:3000/'
 var url = 'http://18.182.195.43:3000/'
+var nextPic = []
 function getData() {
   return new Promise((resolve, reject) => {
 
@@ -10,7 +11,7 @@ function getData() {
     var urlname = url + 'api/attractions?page=' + nextPage + keyword
     req.open('GET', urlname, true)
     req.onload = function () {
-      var data = JSON.parse(this.responseText);
+      var data = JSON.parse(this.responseText)
 
       // 找不到資料時：
       if (data.data.length == 0) {
@@ -38,7 +39,6 @@ function getData() {
     }
     req.send()
   })
-  // scrollToLoadMore()
 }
 
 function addElement(title, photourl, mrt, category, id, k) {
@@ -121,38 +121,48 @@ function toSignin() {
   }
 }
 
+var changeImgN = 1 // 下一張
+var changeImg = 0  // 中間
+var changeImgP = 0 // 前一張
+var imgCount = 0
 function getAttraction(id) {
-  var req = new XMLHttpRequest()
-  var urlname = url + 'api/attraction/' + id
-  req.open('GET', urlname, true)
-  req.onload = function () {
-    var data = JSON.parse(this.responseText);
-    data = data.data[0]
+  return new Promise((resolve, reject) => {
+    var req = new XMLHttpRequest()
+    var urlname = url + 'api/attraction/' + id
+    req.open('GET', urlname, true)
+    req.onload = function () {
+      var data = JSON.parse(this.responseText)
+      imgCount = data.data[0].images[0].length
+      nextPic = data.data[0].images[0]
+      document.getElementsByClassName('picPre')[0].src = data.data[0].images[0][imgCount - 1]
+      document.getElementsByClassName('picNow')[0].src = data.data[0].images[0][changeImg]
+      document.getElementsByClassName('picNext')[0].src = data.data[0].images[0][changeImg + 1]
+      changeImgP = imgCount - 1
+      // getAttractionInfo( class名稱 , 對應data裡面 key的名稱 )
+      getAttractionInfo('title', 'name')
+      getAttractionInfo('cat', 'category')
+      getAttractionInfo('mrt', 'mrt')
+      getAttractionInfo('introduction', 'description')
+      getAttractionInfo('address', 'address')
+      getAttractionInfo('transport', 'transport')
 
-    var title = document.getElementsByClassName('title')[0]
-    title.innerHTML = data.name
-    var cat = document.getElementsByClassName('cat')[0]
-    cat.innerHTML = data.category
-    // var mrt = document.getElementsByClassName('mrt')[0]
-    // mrt.innerHTML = data.mrt
-    getAttractionInfo('mrt')
-  }
-  req.send()
+      function getAttractionInfo(varName, keyName) {
+        document.getElementsByClassName(varName)[0].innerHTML = data.data[0][keyName]
+      }
+
+      addElementPicCircle(changeImg, imgCount)
+      resolve()
+    }
+    req.send()
+  })
 
 }
 
-function getAttractionInfo(varName) {
-  var dumVarName = document.getElementsByClassName(varName)[0]
-  console.log(dumVarName)
-  console.log(varName)
-  dumVarName.innerHTML = data.mrt
-
-}
 
 function indexOnload() {
   // getData()
   var keyword = document.getElementById('keyword')
-  keyword.addEventListener("keyup", function (event) {
+  keyword.addEventListener('keyup', function (event) {
     if (event.keyCode === 13) {
       searchAttraction()
     }
@@ -163,10 +173,69 @@ function indexOnload() {
     scrollToLoadMore()
   })
 }
+function attractionOnload(id) {
+  // getAttraction(id)
+  let promise = getAttraction(id)
+  promise.then(function () {
+    AEL()
+  })
+}
+function AEL() {
+  window.addEventListener('keyup', function (e, arrow) {
+    arrow = ''
+    subAEL(e, arrow)
+  })
+}
+function subAEL(e, arrow) {
+  if (e.keyCode === 39 || arrow === 'R') {
+    document.getElementsByClassName('picNow')[0].style.transform = 'translateX(-100%)'
+    document.getElementsByClassName('picNext')[0].style.transform = 'translateX(0%)'
+    setTimeout(() => {
+      var tt = document.getElementById('circle' + changeImg)
+      tt.style.background = 'white'
+      changeImg += 1
+      changeImg = Math.abs(changeImg) % imgCount
+      changeImgN += 1
+      changeImgN = Math.abs(changeImgN) % imgCount
+      changeImgP += 1
+      changeImgP = Math.abs(changeImgP) % imgCount
+      var tt = document.getElementById('circle' + changeImg)
+      tt.style.background = 'black'
+      document.getElementsByClassName('picPre')[0].remove()
+      document.getElementsByClassName('picNow')[0].setAttribute('class', 'part1Img picPre')
+      document.getElementsByClassName('picNext')[0].setAttribute('class', 'part1Img picNow')
+      var picNext = document.createElement('img')
+      picNext.setAttribute('class', 'part1Img picNext')
+      picNext.setAttribute('src', nextPic[changeImgN])
+      document.getElementsByClassName('part1pic')[0].appendChild(picNext)
+    }, 500)
+  } else if (e.keyCode === 37 || arrow === 'L') {
+    document.getElementsByClassName('picNow')[0].style.transform = 'translateX(100%)'
+    document.getElementsByClassName('picPre')[0].style.transform = 'translateX(0%)'
+    setTimeout(() => {
+      var tt = document.getElementById('circle' + changeImg)
+      tt.style.background = 'white'
+      changeImg -= 1
+      changeImg = Math.abs(imgCount + changeImg) % imgCount
+      changeImgP -= 1
+      changeImgP = Math.abs(imgCount + changeImgP) % imgCount
+      changeImgN -= 1
+      changeImgN = Math.abs(imgCount + changeImgN) % imgCount
+      var tt = document.getElementById('circle' + changeImg)
+      tt.style.background = 'black'
+      document.getElementsByClassName('picNext')[0].remove()
+      document.getElementsByClassName('picNow')[0].setAttribute('class', 'part1Img picNext')
+      document.getElementsByClassName('picPre')[0].setAttribute('class', 'part1Img picNow')
+      var picPre = document.createElement('img')
+      picPre.setAttribute('class', 'part1Img picPre')
+      picPre.setAttribute('src', nextPic[changeImgP])
+      document.getElementsByClassName('part1pic')[0].appendChild(picPre)
+    }, 500)
+  }
+}
 
 function loadmore() {
   if (nextPage != null) {
-    // getData()
     let promise = getData()
     promise.then(() => {
       TF = true
@@ -181,8 +250,7 @@ function scrollToLoadMore() {
   window.addEventListener('scroll', function () {
     var content = document.getElementsByClassName('content')[0]
     var rect = content.getBoundingClientRect()
-    var height = document.documentElement.clientHeight;
-    // console.log(height, rect.bottom)
+    var height = document.documentElement.clientHeight
     if ((height - rect.bottom) >= 0 & TF == true) {
       TF = false
       loadmore()
@@ -218,14 +286,44 @@ function searchAttraction() {
 
 function noMatchData() {
   var n = document.getElementsByClassName('noMatchData')[0]
-  if (n) {
-    // n.remove()
-    console.log('沒砍掉啊')
-  }
   var noMatchData = document.createElement('div')
   noMatchData.appendChild(document.createTextNode('找不到包含 ' + keyword.replace('&keyword=', '') + ' 的景點'))
   noMatchData.setAttribute('class', 'noMatchData')
   document.getElementsByClassName('wrapper')[0].appendChild(noMatchData)
 }
 
+function addElementPicCircle(changeImg, imgCount) {
+  // 小白點們 有黑有白啦
+  var circlesContainer = document.createElement('div')
+  circlesContainer.setAttribute('class', 'circlesContainer')
+  document.getElementsByClassName('part1pic')[0].appendChild(circlesContainer)
+  for (let k = 0; k < imgCount; k++) {
+    var littleCircle = document.createElement('div')
+    littleCircle.setAttribute('class', 'littleCircle')
+    littleCircle.setAttribute('id', 'circle' + k)
+    document.getElementsByClassName('circlesContainer')[0].appendChild(littleCircle)
+  }
+  var tt = document.getElementById('circle' + changeImg)
+  tt.style.background = 'black'
 
+  // 左右圈圈
+  var leftCircle = document.createElement('div')
+  leftCircle.setAttribute('class', 'LRcirlce')
+  leftCircle.setAttribute('id', 'leftCircle')
+  leftCircle.setAttribute('onclick', 'subAEL(\'\',\'L\')')
+  document.getElementsByClassName('part1pic')[0].appendChild(leftCircle)
+  var rightCircle = document.createElement('div')
+  rightCircle.setAttribute('class', 'LRcirlce')
+  rightCircle.setAttribute('id', 'rightCircle')
+  rightCircle.setAttribute('onclick', 'subAEL(\'\',\'R\')')
+  document.getElementsByClassName('part1pic')[0].appendChild(rightCircle)
+
+}
+
+function howMuch() {
+  if (document.getElementById('day').checked) {
+    document.getElementById('price').innerHTML = 2000
+  } else {
+    document.getElementById('price').innerHTML = 2500
+  }
+}

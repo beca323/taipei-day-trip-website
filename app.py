@@ -28,7 +28,8 @@ def attraction(id):
 
 @app.route("/booking")
 def booking():
-    return render_template("booking.html")
+    name = '123'
+    return render_template("booking.html", name=name)
 
 
 @app.route("/thankyou")
@@ -93,7 +94,7 @@ def attractionsID(attractionid):
         'mrt': sqldata[0][6],
         'latitude': sqldata[0][7],
         'longitude': sqldata[0][8],
-        'images': [imagesx1[0]]
+        'images': [imagesx1]
     }
     return {'data': myresult}
 
