@@ -28,7 +28,8 @@ def attraction(id):
 
 @app.route("/booking")
 def booking():
-    return render_template("booking.html")
+    name = '123'
+    return render_template("booking.html", name=name)
 
 
 @app.route("/thankyou")

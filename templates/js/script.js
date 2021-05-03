@@ -1,8 +1,8 @@
 var nextPage = 0
 var keyword = ''
-var url = 'http://0.0.0.0:3000/'
+// var url = 'http://0.0.0.0:3000/'
 // var url = 'http://127.0.0.1:3000/'
-// var url = 'http://18.182.195.43:3000/'
+var url = 'http://18.182.195.43:3000/'
 var nextPic = []
 function getData() {
   return new Promise((resolve, reject) => {
@@ -11,7 +11,7 @@ function getData() {
     var urlname = url + 'api/attractions?page=' + nextPage + keyword
     req.open('GET', urlname, true)
     req.onload = function () {
-      var data = JSON.parse(this.responseText);
+      var data = JSON.parse(this.responseText)
 
       // 找不到資料時：
       if (data.data.length == 0) {
@@ -122,7 +122,9 @@ function toSignin() {
   }
 }
 
-var changeImg = 0
+var changeImgN = 1 // 下一張
+var changeImg = 0  // 中間
+var changeImgP = 0 // 前一張
 var imgCount = 0
 function getAttraction(id) {
   return new Promise((resolve, reject) => {
@@ -130,12 +132,13 @@ function getAttraction(id) {
     var urlname = url + 'api/attraction/' + id
     req.open('GET', urlname, true)
     req.onload = function () {
-      var data = JSON.parse(this.responseText);
+      var data = JSON.parse(this.responseText)
       imgCount = data.data[0].images[0].length
-      // console.log(changeImg, imgCount)
       nextPic = data.data[0].images[0]
-      document.getElementsByClassName('part1Img')[0].src = data.data[0].images[0][changeImg]
-
+      document.getElementsByClassName('picPre')[0].src = data.data[0].images[0][imgCount - 1]
+      document.getElementsByClassName('picNow')[0].src = data.data[0].images[0][changeImg]
+      document.getElementsByClassName('picNext')[0].src = data.data[0].images[0][changeImg + 1]
+      changeImgP = imgCount - 1
       // getAttractionInfo( class名稱 , 對應data裡面 key的名稱 )
       getAttractionInfo('title', 'name')
       getAttractionInfo('cat', 'category')
@@ -160,7 +163,7 @@ function getAttraction(id) {
 function indexOnload() {
   // getData()
   var keyword = document.getElementById('keyword')
-  keyword.addEventListener("keyup", function (event) {
+  keyword.addEventListener('keyup', function (event) {
     if (event.keyCode === 13) {
       searchAttraction()
     }
@@ -186,27 +189,66 @@ function AEL() {
 }
 function subAEL(e, arrow) {
   if (e.keyCode === 39 || arrow === 'R') {
-    var tt = document.getElementById('circle' + changeImg)
-    tt.style.background = 'white'
-    changeImg += 1
-    changeImg = Math.abs(changeImg) % imgCount
-    getImg(changeImg)
+    document.getElementsByClassName('picNow')[0].style.transform = 'translateX(-100%)'
+    document.getElementsByClassName('picNext')[0].style.transform = 'translateX(0%)'
+    setTimeout(() => {
+      var tt = document.getElementById('circle' + changeImg)
+      tt.style.background = 'white'
+      changeImg += 1
+      changeImg = Math.abs(changeImg) % imgCount
+      changeImgN += 1
+      changeImgN = Math.abs(changeImgN) % imgCount
+      changeImgP += 1
+      changeImgP = Math.abs(changeImgP) % imgCount
+      console.log(changeImg, changeImgN)
+      var tt = document.getElementById('circle' + changeImg)
+      tt.style.background = 'black'
+      document.getElementsByClassName('picPre')[0].remove()
+      document.getElementsByClassName('picNow')[0].setAttribute('class', 'part1Img picPre')
+      document.getElementsByClassName('picNext')[0].setAttribute('class', 'part1Img picNow')
+      var picNext = document.createElement('img')
+      picNext.setAttribute('class', 'part1Img picNext')
+      picNext.setAttribute('src', nextPic[changeImgN])
+      document.getElementsByClassName('part1pic')[0].appendChild(picNext)
+    }, 500)
   } else if (e.keyCode === 37 || arrow === 'L') {
-    var tt = document.getElementById('circle' + changeImg)
-    tt.style.background = 'white'
-    changeImg -= 1
-    changeImg = Math.abs(imgCount + changeImg) % imgCount
-    getImg(changeImg)
+    document.getElementsByClassName('picNow')[0].style.transform = 'translateX(100%)'
+    document.getElementsByClassName('picPre')[0].style.transform = 'translateX(0%)'
+    setTimeout(() => {
+      var tt = document.getElementById('circle' + changeImg)
+      tt.style.background = 'white'
+      changeImg -= 1
+      changeImg = Math.abs(imgCount + changeImg) % imgCount
+      changeImgP -= 1
+      changeImgP = Math.abs(imgCount + changeImgP) % imgCount
+      changeImgN -= 1
+      changeImgN = Math.abs(imgCount + changeImgN) % imgCount
+      var tt = document.getElementById('circle' + changeImg)
+      tt.style.background = 'black'
+      // console.log(changeImg, changeImgP)
+      document.getElementsByClassName('picNext')[0].remove()
+      document.getElementsByClassName('picNow')[0].setAttribute('class', 'part1Img picNext')
+      document.getElementsByClassName('picPre')[0].setAttribute('class', 'part1Img picNow')
+      var picPre = document.createElement('img')
+      picPre.setAttribute('class', 'part1Img picPre')
+      picPre.setAttribute('src', nextPic[changeImgP])
+      document.getElementsByClassName('part1pic')[0].appendChild(picPre)
+    }, 500)
   }
 }
-function getImg(changeImg) {
-  var tt = document.getElementById('circle' + changeImg)
+
+function getImg(a, b, changeClass) {
+  // document.getElementsByClassName('part1Img')[1].remove()
+  // document.getElementsByClassName('picNext')[0].setAttribute('class', 'part1Img')
+  var picNext = document.createElement('img')
+  picNext.setAttribute('class', changeClass)
+  var tt = document.getElementById('circle' + b)
   tt.style.background = 'black'
-  document.getElementsByClassName('part1Img')[0].src = nextPic[changeImg]
+  picNext.setAttribute('src', nextPic[a])
+  document.getElementsByClassName('part1pic')[0].appendChild(picNext)
 }
 function loadmore() {
   if (nextPage != null) {
-    // getData()
     let promise = getData()
     promise.then(() => {
       TF = true
@@ -221,7 +263,7 @@ function scrollToLoadMore() {
   window.addEventListener('scroll', function () {
     var content = document.getElementsByClassName('content')[0]
     var rect = content.getBoundingClientRect()
-    var height = document.documentElement.clientHeight;
+    var height = document.documentElement.clientHeight
     // console.log(height, rect.bottom)
     if ((height - rect.bottom) >= 0 & TF == true) {
       TF = false
@@ -266,6 +308,7 @@ function noMatchData() {
 
 function addElementPicCircle(changeImg, imgCount) {
   // 小白點們 有黑有白啦
+  // console.log(changeImg, imgCount)
   var circlesContainer = document.createElement('div')
   circlesContainer.setAttribute('class', 'circlesContainer')
   document.getElementsByClassName('part1pic')[0].appendChild(circlesContainer)
@@ -282,12 +325,12 @@ function addElementPicCircle(changeImg, imgCount) {
   var leftCircle = document.createElement('div')
   leftCircle.setAttribute('class', 'LRcirlce')
   leftCircle.setAttribute('id', 'leftCircle')
-  leftCircle.setAttribute('onclick', "subAEL('','L')")
+  leftCircle.setAttribute('onclick', 'subAEL(\'\',\'L\')')
   document.getElementsByClassName('part1pic')[0].appendChild(leftCircle)
   var rightCircle = document.createElement('div')
   rightCircle.setAttribute('class', 'LRcirlce')
   rightCircle.setAttribute('id', 'rightCircle')
-  rightCircle.setAttribute('onclick', "subAEL('','R')")
+  rightCircle.setAttribute('onclick', 'subAEL(\'\',\'R\')')
   document.getElementsByClassName('part1pic')[0].appendChild(rightCircle)
 
 }
