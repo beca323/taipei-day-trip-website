@@ -39,7 +39,6 @@ function getData() {
     }
     req.send()
   })
-  // scrollToLoadMore()
 }
 
 function addElement(title, photourl, mrt, category, id, k) {
@@ -200,7 +199,6 @@ function subAEL(e, arrow) {
       changeImgN = Math.abs(changeImgN) % imgCount
       changeImgP += 1
       changeImgP = Math.abs(changeImgP) % imgCount
-      console.log(changeImg, changeImgN)
       var tt = document.getElementById('circle' + changeImg)
       tt.style.background = 'black'
       document.getElementsByClassName('picPre')[0].remove()
@@ -225,7 +223,6 @@ function subAEL(e, arrow) {
       changeImgN = Math.abs(imgCount + changeImgN) % imgCount
       var tt = document.getElementById('circle' + changeImg)
       tt.style.background = 'black'
-      // console.log(changeImg, changeImgP)
       document.getElementsByClassName('picNext')[0].remove()
       document.getElementsByClassName('picNow')[0].setAttribute('class', 'part1Img picNext')
       document.getElementsByClassName('picPre')[0].setAttribute('class', 'part1Img picNow')
@@ -237,16 +234,6 @@ function subAEL(e, arrow) {
   }
 }
 
-function getImg(a, b, changeClass) {
-  // document.getElementsByClassName('part1Img')[1].remove()
-  // document.getElementsByClassName('picNext')[0].setAttribute('class', 'part1Img')
-  var picNext = document.createElement('img')
-  picNext.setAttribute('class', changeClass)
-  var tt = document.getElementById('circle' + b)
-  tt.style.background = 'black'
-  picNext.setAttribute('src', nextPic[a])
-  document.getElementsByClassName('part1pic')[0].appendChild(picNext)
-}
 function loadmore() {
   if (nextPage != null) {
     let promise = getData()
@@ -264,7 +251,6 @@ function scrollToLoadMore() {
     var content = document.getElementsByClassName('content')[0]
     var rect = content.getBoundingClientRect()
     var height = document.documentElement.clientHeight
-    // console.log(height, rect.bottom)
     if ((height - rect.bottom) >= 0 & TF == true) {
       TF = false
       loadmore()
@@ -308,7 +294,6 @@ function noMatchData() {
 
 function addElementPicCircle(changeImg, imgCount) {
   // 小白點們 有黑有白啦
-  // console.log(changeImg, imgCount)
   var circlesContainer = document.createElement('div')
   circlesContainer.setAttribute('class', 'circlesContainer')
   document.getElementsByClassName('part1pic')[0].appendChild(circlesContainer)
@@ -333,4 +318,12 @@ function addElementPicCircle(changeImg, imgCount) {
   rightCircle.setAttribute('onclick', 'subAEL(\'\',\'R\')')
   document.getElementsByClassName('part1pic')[0].appendChild(rightCircle)
 
+}
+
+function howMuch() {
+  if (document.getElementById('day').checked) {
+    document.getElementById('price').innerHTML = 2000
+  } else {
+    document.getElementById('price').innerHTML = 2500
+  }
 }

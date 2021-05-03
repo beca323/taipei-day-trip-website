@@ -171,6 +171,11 @@ nav .website_title, nav ul li {
   justify-content: space-around;
 }
 
+.pic_card:hover {
+  opacity: 0.7;
+  transition: all .2s ease;
+}
+
 .pic_card {
   min-width: 270px;
   /* height: 242px; */
