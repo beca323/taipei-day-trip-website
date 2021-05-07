@@ -55,19 +55,21 @@
     COPYRIGHT © 2021 台北一日遊
   </footer>
 
-  <div id="dialogContainer">
-    <div class="dialog">
-      <div id="closeBtn" onclick="closeBtn()">✕</div>
-      <div class="dialogTitle">登入會員帳號</div>
-      <input type="text" id="getName" class="indexInput" placeholder="輸入姓名">
-      <input type="text" class="indexInput" placeholder="輸入電子信箱">
-      <input type="text" class="indexInput" placeholder="輸入密碼">
-      <div>
-        <button class="loginBtn">登入帳戶</button>
+  <form action="/signin" method="POST">
+    <div id="dialogContainer">
+      <div class="dialog">
+        <div id="closeBtn" onclick="closeBtn()">✕</div>
+        <div class="dialogTitle">登入會員帳號</div>
+        <input type="text" id="getName" class="indexInput" placeholder="輸入姓名">
+        <input type="text" class="indexInput" placeholder="輸入電子信箱">
+        <input type="text" class="indexInput" placeholder="輸入密碼">
+        <div>
+          <button class="loginBtn">登入帳戶</button>
+        </div>
+        <span id="toSignin" onclick="toSignin()">還沒有帳戶？點此註冊</span>
       </div>
-      <span id="toSignin" onclick="toSignin()">還沒有帳戶？點此註冊</span>
     </div>
-  </div>
+  </form>
 </body>
 
 </html>
