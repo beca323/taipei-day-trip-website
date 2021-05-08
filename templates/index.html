@@ -18,7 +18,11 @@
         <a href="/" class="website_title">台北一日遊</a>
         <ul>
           <li><a href="/booking">預定行程</a></li>
-          <li onclick="loginDialog()">登入/註冊</li>
+          <li id="logoutDisplay" onclick="loginDialog()">登入/註冊</li>
+          <span id="loginDisplay">
+            <span>hi, {{username}}</span>
+            <a href="/logout">登出</a>
+          </span>
         </ul>
       </div>
     </nav>
@@ -60,11 +64,12 @@
       <div class="dialog">
         <div id="closeBtn" onclick="closeBtn()">✕</div>
         <div class="dialogTitle">登入會員帳號</div>
-        <input type="text" id="getName" class="indexInput" placeholder="輸入姓名">
-        <input type="text" class="indexInput" placeholder="輸入電子信箱">
-        <input type="text" class="indexInput" placeholder="輸入密碼">
+        <input type="text" name="username" id="getName" class="indexInput" placeholder="輸入姓名">
+        <input type="email" name="useremail" class="indexInput" placeholder="輸入電子信箱">
+        <input type="password" name="userpwd" class="indexInput" placeholder="輸入密碼">
         <div>
-          <button class="loginBtn">登入帳戶</button>
+          <button class="loginBtn" name="submit" value="login">登入帳戶</button>
+          <button class="signupBtn" name="submit" value="signup">註冊帳戶</button>
         </div>
         <span id="toSignin" onclick="toSignin()">還沒有帳戶？點此註冊</span>
       </div>
