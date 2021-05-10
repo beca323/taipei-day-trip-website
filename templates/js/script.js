@@ -1,8 +1,8 @@
 var nextPage = 0
 var keyword = ''
-// var url = 'http://0.0.0.0:3000/'
+var url = 'http://0.0.0.0:3000/'
 // var url = 'http://127.0.0.1:3000/'
-var url = 'http://18.182.195.43:3000/'
+// var url = 'http://18.182.195.43:3000/'
 var nextPic = []
 function getData() {
   return new Promise((resolve, reject) => {
@@ -112,15 +112,10 @@ function toSignin() {
   var toSignin = document.getElementById('toSignin')
   if (logOrSign == true) {
     toSignin.innerHTML = '已經有帳戶了？點此登入'
-    document.querySelector('.loginBtn').style.display = 'none'
-    document.querySelector('.signupBtn').style.display = 'block'
-
     logOrSign = false
   } else {
     toSignin.innerHTML = '還沒有帳戶？點此註冊'
     dialogTitle[0].innerHTML = '登入會員帳號'
-    document.querySelector('.loginBtn').style.display = 'block'
-    document.querySelector('.signupBtn').style.display = 'none'
     logOrSign = true
     getName.style.display = 'none'
   }
@@ -177,13 +172,6 @@ function indexOnload() {
     TF = true
     scrollToLoadMore()
   })
-  let loginDisplay = document.querySelector('#loginDisplay')
-  let username = loginDisplay.children[0].innerHTML.replace('hi, ', '')
-  // console.log(username)
-  if (username !== '') {
-    document.querySelector('#loginDisplay').style.display = 'inline'
-    document.querySelector('#logoutDisplay').style.display = 'none'
-  }
 }
 function attractionOnload(id) {
   // getAttraction(id)

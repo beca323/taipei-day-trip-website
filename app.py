@@ -1,9 +1,7 @@
 # 載入Flask
 from flask import Flask, redirect, request, render_template, session, jsonify, json
 import mysql.connector
-from flask_bcrypt import Bcrypt
 
-bcrypt = Bcrypt()
 mydb = mysql.connector.connect(host='localhost',
                                user='root',
                                password='password',
@@ -16,17 +14,11 @@ app.config["JSON_AS_ASCII"] = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["JSON_SORT_KEYS"] = False
 
-app.secret_key = 'jkdkowu48g'
-app.config["JSON_AS_ASCII"] = False
-
 
 # Pages
 @app.route("/")
 def index():
-    username = ''
-    if 'username' in session:
-        username = session.get('username')
-    return render_template("index.html", username=username)
+    return render_template("index.html")
 
 
 @app.route("/attraction/<id>")
@@ -115,42 +107,6 @@ def internal_error400(error):
 @app.errorhandler(500)
 def internal_error500(error):
     return {'error': True, "message": "自訂的錯誤訊息"}
-
-
-@app.route('/signin', methods=['POST'])
-def signin():
-    username = request.form['username']
-    pwd = request.form['userpwd']
-    email = request.form['useremail']
-    if request.form['submit'] == 'signup':
-        if username == '' or pwd == '' or email == '':
-            return {'error': True, "message": "註冊資料不可為空"}
-        sql = 'INSERT INTO taipei_user (username, email, password) VALUES (%s, %s, %s)'
-        pwd = bcrypt.generate_password_hash(password=pwd)
-        val = (username, email, pwd)
-        mycursor.execute(sql, val)
-        mydb.commit()
-    elif request.form['submit'] == 'login':
-        if pwd == '' or email == '':
-            return {'error': True, "message": "登入資料不可為空"}
-        sql = 'SELECT username,email,password FROM taipei_user WHERE email = %s'
-        val = (email, )
-        mycursor.execute(sql, val)
-        myresult = mycursor.fetchall()
-        checkpassword = bcrypt.check_password_hash(myresult[0][2], pwd)
-        print(checkpassword)
-        if myresult == []:
-            return {'error': True, "message": "登入資料錯誤"}
-        elif myresult[0][1] == email and checkpassword == True:
-            session['username'] = myresult[0][0]
-
-    return redirect('/')
-
-
-@app.route('/logout')
-def logout():
-    session.pop('username', None)
-    return redirect('/')
 
 
 # app.run(port=3000)

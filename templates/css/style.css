@@ -59,7 +59,7 @@ nav ul {
   list-style: none;
   float: right;
   padding: 20px;
-  /* cursor: pointer; */
+  cursor: pointer;
 }
 
 nav .website_title {
@@ -72,11 +72,6 @@ nav .website_title {
 nav .website_title, nav ul li {
   display: inline-flex;
   margin: 0 20px;
-  cursor: pointer;
-}
-
-#loginDisplay {
-  display: none;
 }
 
 #check {
@@ -296,7 +291,7 @@ footer {
   right: 0px;
 }
 
-.loginBtn, .bookBtn, .payBtn, .signupBtn {
+.loginBtn, .bookBtn, .payBtn {
   cursor: pointer;
   background: #337788;
   color: white;
@@ -307,12 +302,8 @@ footer {
   font-size: 16px;
 }
 
-.loginBtn, .signupBtn {
+.loginBtn {
   padding: 15px;
-}
-
-.signupBtn {
-  display: none;
 }
 
 .bookBtn {
