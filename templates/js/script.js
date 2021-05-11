@@ -112,14 +112,20 @@ function toSignin() {
   var toSignin = document.getElementById('toSignin')
   if (logOrSign == true) {
     toSignin.innerHTML = '已經有帳戶了？點此登入'
+    document.querySelector('.loginBtn').style.display = 'none'
+    document.querySelector('.signupBtn').style.display = 'block'
     logOrSign = false
   } else {
     toSignin.innerHTML = '還沒有帳戶？點此註冊'
     dialogTitle[0].innerHTML = '登入會員帳號'
+    document.querySelector('.loginBtn').style.display = 'block'
+    document.querySelector('.signupBtn').style.display = 'none'
     logOrSign = true
     getName.style.display = 'none'
   }
 }
+
+
 
 var changeImgN = 1 // 下一張
 var changeImg = 0  // 中間
@@ -171,13 +177,121 @@ function indexOnload() {
   promise.then(function () {
     TF = true
     scrollToLoadMore()
+    searchUsername()
+
   })
+}
+function bookingOnload() {
+  searchUsername()
+}
+function searchUsername() {
+  var req = new XMLHttpRequest()
+  var urlname = url + 'api/user'
+  req.open('GET', urlname, true)
+  req.onload = function () {
+    var data = JSON.parse(this.responseText)
+    // console.log(data.data)
+    if (data.data == null) {
+    } else {
+      console.log('已登入')
+      document.querySelector('#logoutBtn').style.display = 'inline'
+      document.querySelector('#loginSignin').style.display = 'none'
+    }
+  }
+  req.send()
+}
+
+function signup() {
+  username = document.querySelector('#getName')
+  email = document.querySelector('#getEmail')
+  password = document.querySelector('#getPassword')
+  var req = new XMLHttpRequest()
+  var urlname = url + 'api/user'
+  req.open('POST', urlname, true)
+  var data
+  data = {
+    'name': username.value,
+    'email': email.value,
+    'password': password.value
+  }
+  data = JSON.stringify(data)
+  req.setRequestHeader('Content-type', 'application/json')
+  req.onload = function () {
+    response = this.responseText
+    console.log(response)
+    if (req.status != 200) {
+      message = JSON.parse(response).message
+      addSignupResponse(message, 'warningTxt')
+    } else {
+      message = '註冊成功'
+      addSignupResponse(message, 'hintTxt')
+      document.querySelector('#toSignin').innerHTML = '點此登入'
+    }
+  }
+  req.send(data)
+}
+
+function signin() {
+  email = document.querySelector('#getEmail')
+  password = document.querySelector('#getPassword')
+  var req = new XMLHttpRequest()
+  var urlname = url + 'api/user'
+  req.open('PATCH', urlname, true)
+  var data
+  data = {
+    'email': email.value,
+    'password': password.value
+  }
+  data = JSON.stringify(data)
+  req.setRequestHeader('Content-type', 'application/json')
+
+  req.send(data)
+  req.onload = function () {
+    response = this.responseText
+    console.log(response)
+    if (req.status != 200) {
+      message = JSON.parse(response).message
+      addSignupResponse(message, 'warningTxt')
+    } else {
+      message = '登入成功'
+      addSignupResponse(message, 'hintTxt')
+      window.location.reload()
+    }
+  }
+}
+
+function addSignupResponse(message, txtTypeClass) {
+  var signupResponse = document.createElement('div')
+  signupResponse.appendChild(document.createTextNode(message))
+  signupResponse.setAttribute('class', txtTypeClass)
+  signupResponse.setAttribute('id', 'signupResponse')
+  document.getElementById('submitBtn').appendChild(signupResponse)
+  window.addEventListener('click', function () {
+    let remove = document.getElementById('signupResponse')
+    if (remove) {
+      remove.remove()
+    }
+  })
+}
+
+function logout() {
+  var req = new XMLHttpRequest()
+  var urlname = url + 'api/user'
+  req.open('DELETE', urlname, true)
+  req.onload = function () {
+    response = this.response
+    if (req.status == 200) {
+      window.location.reload()
+    }
+  }
+  req.send()
 }
 function attractionOnload(id) {
   // getAttraction(id)
   let promise = getAttraction(id)
   promise.then(function () {
     AEL()
+    searchUsername()
   })
 }
 function AEL() {
