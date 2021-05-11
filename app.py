@@ -30,8 +30,7 @@ def attraction(id):
 
 @app.route("/booking")
 def booking():
-    name = '123'
-    return render_template("booking.html", name=name)
+    return render_template("booking.html")
 
 
 @app.route("/thankyou")
@@ -101,52 +100,8 @@ def attractionsID(attractionid):
     return {'data': myresult}
 
 
-# @app.route('/signin', methods=['POST'])
-# def signin():
-#     username = request.form['username']
-#     email = request.form['email']
-#     password = request.form['password']
-#     if request.form['submit'] == 'login':
-
-#         mycursor.execute('SELECT * FROM taipei_user WHERE email = "' + email +
-#                          '" AND password = "' + password + '"')
-#         myresult = mycursor.fetchall()
-
-#         if myresult == []:
-#             return {'error': True, 'message': '帳號密碼錯誤'}
-#         elif myresult[0][3] == email and myresult[0][4] == password:
-
-#             session['id'] = myresult[0][0]
-#             session['username'] = myresult[0][1]
-#             session['email'] = myresult[0][3]
-#             session['password'] = myresult[0][4]
-#             return redirect('/')
-#     elif request.form['submit'] == 'signupp':
-#         mycursor.execute('SELECT email FROM taipei_user WHERE email = "' +
-#                          email + '"')
-#         myresult = mycursor.fetchall()
-#         if email == '' or password == '':
-#             message = '不可為空'
-#             return {'error': True, 'message': message}
-
-#         elif myresult != []:
-#             message = '帳號已被註冊'
-#             return {'error': True, 'message': message}
-
-#         else:
-#             sql = 'INSERT INTO taipei_user (name, email, password) VALUES (%s, %s, %s)'
-#             val = (username, email, password)
-#             mycursor.execute(sql, val)
-#             mydb.commit()
-#             return redirect('/')
-#     else:
-#         print('...')
-#         return redirect('/')
-
-
 @app.route('/api/user', methods=['GET'])
 def api_get():
-    # username = request.args.get('username', '')
     username = session.get('username', '')
     mycursor.execute('SELECT * FROM taipei_user WHERE name = "' + username +
                      '"')
@@ -219,9 +174,9 @@ def signout():
     return redirect('/')
 
 
-# @app.errorhandler(404)
-# def internal_error400(error):
-#     return {'error': True, "message": "景點編號不正確"}
+@app.errorhandler(404)
+def internal_error400(error):
+    return {'error': True, "message": "錯誤訊息"}
 
 
 @app.errorhandler(500)
