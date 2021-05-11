@@ -13,6 +13,8 @@ app = Flask(__name__, static_folder='templates', static_url_path='/')
 app.config["JSON_AS_ASCII"] = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["JSON_SORT_KEYS"] = False
+app.secret_key = 'jkdkowu48g'
+app.config["JSON_AS_ASCII"] = False
 
 
 # Pages
@@ -28,8 +30,7 @@ def attraction(id):
 
 @app.route("/booking")
 def booking():
-    name = '123'
-    return render_template("booking.html", name=name)
+    return render_template("booking.html")
 
 
 @app.route("/thankyou")
@@ -99,9 +100,83 @@ def attractionsID(attractionid):
     return {'data': myresult}
 
 
+@app.route('/api/user', methods=['GET'])
+def api_get():
+    username = session.get('username', '')
+    mycursor.execute('SELECT * FROM taipei_user WHERE name = "' + username +
+                     '"')
+    myresult = mycursor.fetchall()
+    if myresult == []:
+        userfound = None
+    else:
+        userfound = {
+            'id': myresult[0][0],
+            'name': myresult[0][1],
+            'email': myresult[0][3],
+        }
+    return {'data': userfound}
+
+
+@app.route('/api/user', methods=['POST'])
+def api_post():
+    user = request.get_json()
+    if (user['name'].find(' ') != -1 or user['email'].find(' ') != -1
+            or user['password'].find(' ') != -1 or user['name'] == ''
+            or user['email'] == '' or user['password'] == ''):
+        errorResponse = {'error': True, 'message': '註冊失敗'}
+        return (errorResponse, 400)
+    else:
+        mycursor.execute('SELECT email FROM taipei_user WHERE email = "' +
+                         user['email'] + '"')
+        myresult = mycursor.fetchall()
+        print(myresult)
+        if myresult != []:
+            message = '此email已被註冊'
+            errorResponse = {'error': True, 'message': message}
+            return (errorResponse, 400)
+
+        else:
+            sql = 'INSERT INTO taipei_user (name, email, password) VALUES (%s, %s, %s)'
+            val = (user['name'], user['email'], user['password'])
+            mycursor.execute(sql, val)
+            mydb.commit()
+            return {'ok': True}
+
+
+@app.route('/api/user', methods=['PATCH'])
+def api_patch():
+    user = request.get_json()
+    sql = 'SELECT * FROM taipei_user WHERE email = %s AND password = %s'
+    val = (user['email'], user['password'])
+    mycursor.execute(sql, val)
+    myresult = mycursor.fetchall()
+    if myresult == []:
+        message = '帳號或密碼錯誤'
+        errorResponse = {'error': True, 'message': message}
+        return (errorResponse, 400)
+    else:
+        session['id'] = myresult[0][0]
+        session['username'] = myresult[0][1]
+        session['email'] = myresult[0][3]
+        session['password'] = myresult[0][4]
+        return {'ok': True}
+
+
+@app.route('/api/user', methods=['DELETE'])
+def api_delete():
+    session.pop('username', None)
+    return {'ok': True}
+
+
+@app.route('/logout')
+def signout():
+    session.pop('username', None)
+    return redirect('/')
+
+
 @app.errorhandler(404)
 def internal_error400(error):
-    return {'error': True, "message": "景點編號不正確"}
+    return {'error': True, "message": "錯誤訊息"}
 
 
 @app.errorhandler(500)
@@ -109,5 +184,4 @@ def internal_error500(error):
     return {'error': True, "message": "自訂的錯誤訊息"}
 
 
-# app.run(port=3000)
 app.run(host="0.0.0.0", port=3000)

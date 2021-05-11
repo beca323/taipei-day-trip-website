@@ -10,7 +10,7 @@ mydb = mysql.connector.connect(host='localhost',
 mycursor = mydb.cursor()
 # sql = 'INSERT INTO taipei (info	,stitle	,xpostDate) VALUES (%s, %s, %s)'
 
-with open('./data/taipei-attractions.json',encoding="utf-8") as f:
+with open('./data/taipei-attractions.json', encoding="utf-8") as f:
     data = json.load(f)
 
 item = [''] * 21
@@ -61,7 +61,8 @@ def insertSQL(datanum):
 
             n = 0
             for k in range(0, len(files)):
-                if files[k][-4:] == '.jpg' or files[k][-4:] == '.JPG':
+                if files[k][-4:] == '.PNG' or files[k][-4:] == '.png' or files[
+                        k][-4:] == '.jpg' or files[k][-4:] == '.JPG':
                     jpgfile[n] = files[k]
                     jpgString += ',' + jpgfile[n]
                     n += 1

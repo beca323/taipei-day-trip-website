@@ -74,6 +74,10 @@ nav .website_title, nav ul li {
   margin: 0 20px;
 }
 
+#logoutBtn {
+  display: none;
+}
+
 #check {
   display: none;
 }
@@ -141,6 +145,10 @@ nav .website_title, nav ul li {
   border: #cccccc solid 1px;
   border-radius: 5px;
   margin: 5px;
+}
+
+.signupBtn {
+  display: none;
 }
 
 .imgWelcome1 {
@@ -291,7 +299,7 @@ footer {
   right: 0px;
 }
 
-.loginBtn, .bookBtn, .payBtn {
+.loginBtn, .bookBtn, .payBtn, .signupBtn {
   cursor: pointer;
   background: #337788;
   color: white;
@@ -302,13 +310,21 @@ footer {
   font-size: 16px;
 }
 
-.loginBtn {
+.loginBtn, .signupBtn {
   padding: 15px;
 }
 
 .bookBtn {
   width: auto;
   padding: 10px 20px;
+}
+
+.warningTxt {
+  color: red;
+}
+
+.hintTxt {
+  color: #337788;
 }
 
 .dialog span {
