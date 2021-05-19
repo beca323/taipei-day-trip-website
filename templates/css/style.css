@@ -587,15 +587,19 @@ hr {
   font-weight: 700;
 }
 
-.confirmSection div {
-  display: grid;
-  justify-content: right;
+.confirmSection {
+  position: relative;
+  height: 100px;
+}
+
+.confirmSection>div {
+  position: absolute;
+  right: 0;
 }
 
 .payBtn {
   width: 173px;
   height: 36px;
-  float: right;
   margin: 25px 0;
 }
 

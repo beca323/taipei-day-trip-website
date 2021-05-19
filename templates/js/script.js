@@ -227,6 +227,7 @@ function getBookingInfo() {
         document.getElementsByClassName('bookingName')[0].innerHTML = data.data.attraction.name
         document.getElementsByClassName('bookingDate')[0].innerHTML = data.data.date
         document.getElementsByClassName('bookingPrice')[0].innerHTML = data.data.price
+        document.getElementsByClassName('bookingPrice')[1].innerHTML = data.data.price
         if (data.data.time === 'morning') {
           bookingTime = '早上 9 點到下午 4 點'
         } else {
