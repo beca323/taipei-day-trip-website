@@ -17,7 +17,7 @@
       <div class="navcontain">
         <a href="/" class="website_title">台北一日遊</a>
         <ul>
-          <li><a href="/booking">預定行程</a></li>
+          <li onclick="toBookingPage()">預定行程</li>
           <li onclick="loginDialog()" id="loginSignin">登入/註冊</li>
           <li onclick="logout()" id="logoutBtn">登出</li>
         </ul>
@@ -25,85 +25,94 @@
     </nav>
     <div class="fakenav"></div>
 
-    <div class="booktitle"> 您好，<span id="username"></span> ，待預訂的行程如下：</div>
-    <div class="content bookingContent">
-      <section class="">
-        <div class="bookingImg">
-          <img src="http://www.travel.taipei/d_upload_ttn/sceneadmin/pic/11001481.jpg" alt="">
-        </div>
-        <div>
-          <div class="title colortitle">台北一日遊</div>
-          <div class="frame">
-            <span>日期</span>：
-            <span>yyyy-mm-dd</span>
-          </div>
-          <div class="frame">
-            <span>時間</span>：
-            <span>睡到自然醒的時候</span>
-          </div>
-          <div class="frame">
-            <span>費用</span>：
-            <span>新台幣2000元 貴豹</span>
-          </div>
-          <div class="frame">
-            <span>地點</span>：
-            <span>前面左轉直走再左轉三次</span>
-          </div>
-        </div>
-        <img src="./image/icon_delete.png" alt="" class="iconDelete">
-      </section>
+    <div class="booktitle">
+      您好
+      <span id="username"></span>
+      ，待預訂的行程如下：
     </div>
-    <hr>
-    <div class="content bookingContent">
-      <section class="blockSection">
-        <div>
-          <div class="title">您的聯絡資訊</div>
-          <div class="field">
-            <span>聯絡姓名：</span>
-            <input type="text" name="" id="">
-          </div>
-          <div class="field">
-            <span>連絡信箱：</span>
-            <input type="text" name="" id="">
-          </div>
-          <div class="field">
-            <span>手機號碼：</span>
-            <input type="text" name="" id="">
-          </div>
-          <div class="field notice">
-            請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。
-          </div>
-        </div>
-      </section>
-    </div>
-    <hr>
-    <div class="content bookingContent">
-      <section class="blockSection">
-        <div>
-          <div class="title">信用卡付款資訊</div>
-          <div class="field">
-            <span>卡片號碼：</span>
-            <input type="password" name="" id="" placeholder="**** **** **** ****">
-          </div>
-          <div class="field">
-            <span>連絡信箱：</span>
-            <input type="text" name="" id="" placeholder="MM/YY">
-          </div>
-          <div class="field">
-            <span>手機號碼：</span>
-            <input type="text" name="" id="" placeholder="CVV">
-          </div>
-        </div>
-      </section>
-    </div>
-    <hr>
-    <div class="content bookingContent">
-      <section class="confirmSection blockSection">
-        <div>總價：新台幣 2000 元</div>
-        <button class="payBtn">確認訂購並付款</button>
-      </section>
-    </div>
+    <div class="allContent">
 
+      <div class="content bookingContent">
+        <section class="">
+          <div class="bookingImgDiv">
+            <img class="bookingImg" src="" alt="">
+          </div>
+          <div>
+            <div class="title colortitle">
+              台北一日遊： <span class="colortitle bookingName"></span>
+            </div>
+            <div class="frame">
+              <span>日期</span>：
+              <span class="bookingDate">yyyy-mm-dd</span>
+            </div>
+            <div class="frame">
+              <span>時間</span>：
+              <span class="bookingTime"></span>
+            </div>
+            <div class="frame">
+              <span>費用</span>：
+              <span>新台幣 <span class="bookingPrice"></span> 元</span>
+            </div>
+            <div class="frame">
+              <span>地點</span>：
+              <span class="bookingAddress"></span>
+            </div>
+          </div>
+          <img src="./image/icon_delete.png" alt="" class="iconDelete" onclick="deleteBooking()">
+        </section>
+      </div>
+      <hr>
+      <div class="content bookingContent">
+        <section class="blockSection">
+          <div>
+            <div class="title">您的聯絡資訊</div>
+            <div class="field">
+              <span>聯絡姓名：</span>
+              <input type="text">
+            </div>
+            <div class="field">
+              <span>連絡信箱：</span>
+              <input type="text">
+            </div>
+            <div class="field">
+              <span>手機號碼：</span>
+              <input type="text">
+            </div>
+            <div class="field notice">
+              請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。
+            </div>
+          </div>
+        </section>
+      </div>
+      <hr>
+      <div class="content bookingContent">
+        <section class="blockSection">
+          <div>
+            <div class="title">信用卡付款資訊</div>
+            <div class="field">
+              <span>卡片號碼：</span>
+              <input type="password" placeholder="**** **** **** ****">
+            </div>
+            <div class="field">
+              <span>過期時間：</span>
+              <input type="text" placeholder="MM/YY">
+            </div>
+            <div class="field">
+              <span>驗證密碼：</span>
+              <input type="text" placeholder="CVV">
+            </div>
+          </div>
+        </section>
+      </div>
+      <hr>
+      <div class="content bookingContent">
+        <section class="confirmSection blockSection">
+          <div>總價：新台幣 2000 元</div>
+          <button class="payBtn">確認訂購並付款</button>
+        </section>
+      </div>
+    </div>
+  </div>
   </div>
   <footer>
     COPYRIGHT © 2021 台北一日遊
