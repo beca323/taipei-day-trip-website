@@ -100,6 +100,59 @@ def attractionsID(attractionid):
     return {'data': myresult}
 
 
+# 預定行程
+@app.route('/api/booking', methods=['GET'])
+def api_booking_get():
+    getBooking = session.get('booking', None)
+    username = session.get('username', None)
+    if username == None:
+        message = '未登入'
+        error = {'error': True, 'message': message}
+        return (error, 403)
+    elif getBooking != None:
+        attid = session.get('booking')['attractionId']
+        sql = 'SELECT _id,stitle,address,file FROM taipei WHERE _id = %s'
+        val = (attid, )
+        mycursor.execute(sql, val)
+        sqldata = mycursor.fetchall()
+        imagesx1 = sqldata[0][3].split(',')
+        bookingData = {
+            'attraction': {
+                'id': attid,
+                'name': sqldata[0][1],
+                'address': sqldata[0][2],
+                'image': imagesx1[0]
+            },
+            'date': session.get('booking')['date'],
+            'time': session.get('booking')['time'],
+            'price': session.get('booking')['price']
+        }
+        return {'data': bookingData}
+    else:
+        return {'data': None}
+
+
+@app.route('/api/booking', methods=['POST'])
+def api_booking_post():
+    booking = request.get_json()
+    username = session.get('username', None)
+    if username == None:
+        message = '未登入'
+        error = {'error': True, 'message': message}
+        return (error, 403)
+    else:
+        session['booking'] = booking
+        return {'ok': True}
+    message = '沒成功也沒失敗'
+    return {'error': True, 'message': message}
+
+
+@app.route('/api/booking', methods=['DELETE'])
+def api_booking_delete():
+    session.pop('booking', None)
+    return {'ok': True}
+
+
 @app.route('/api/user', methods=['GET'])
 def api_get():
     username = session.get('username', '')
@@ -129,7 +182,7 @@ def api_post():
         mycursor.execute('SELECT email FROM taipei_user WHERE email = "' +
                          user['email'] + '"')
         myresult = mycursor.fetchall()
-        print(myresult)
+        # print(myresult)
         if myresult != []:
             message = '此email已被註冊'
             errorResponse = {'error': True, 'message': message}
@@ -168,20 +221,20 @@ def api_delete():
     return {'ok': True}
 
 
-@app.route('/logout')
-def signout():
-    session.pop('username', None)
-    return redirect('/')
+# @app.route('/logout')
+# def signout():
+#     session.pop('username', None)
+#     return redirect('/')
 
 
 @app.errorhandler(404)
 def internal_error400(error):
-    return {'error': True, "message": "錯誤訊息"}
+    return {'error': True, 'message': '錯誤訊息 404'}
 
 
 @app.errorhandler(500)
 def internal_error500(error):
-    return {'error': True, "message": "自訂的錯誤訊息"}
+    return {'error': True, 'message': '自訂的錯誤訊息 500'}
 
 
-app.run(host="0.0.0.0", port=3000)
+app.run(host='0.0.0.0', port=3000)

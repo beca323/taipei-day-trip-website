@@ -27,7 +27,7 @@ html, body {
   content: '';
   position: fixed;
   top: 0;
-  z-index: 99;
+  z-index: 102;
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.25);
@@ -42,7 +42,7 @@ nav {
   width: 100%;
   height: 54px;
   background-color: white;
-  z-index: 50;
+  z-index: 101;
   display: flex;
   justify-content: center;
   box-shadow: 1px 1px 1px #eeeeee;
@@ -242,10 +242,14 @@ footer {
   background: #757575;
   color: white;
   width: 100%;
-  height: 104px;
+  min-height: 104px;
   line-height: 104px;
   text-align: center;
   bottom: 0;
+}
+
+.footerHeight {
+  height: calc(100vh - 202.73px);
 }
 
 #dialogContainer {
@@ -258,7 +262,7 @@ footer {
   top: 80px;
   left: 50vw;
   transform: translateX(-50%);
-  z-index: 100;
+  z-index: 200;
   display: none;
   animation: slideIn .3s ease;
 }
@@ -500,14 +504,14 @@ hr {
   /* height: 170px; */
 }
 
-.bookingImg {
+.bookingImgDiv {
   width: 266px;
   height: 200px;
   overflow: hidden;
   margin-right: 30px;
 }
 
-.bookingImg img {
+.bookingImgDiv img {
   height: 100%;
   object-fit: cover;
 }
@@ -544,6 +548,13 @@ hr {
   position: absolute;
   right: 0;
   width: 30px;
+  cursor: pointer;
+}
+
+.allContentTxt {
+  max-width: 1000px;
+  padding: 30px 10px;
+  margin: auto;
 }
 
 .frame {
@@ -576,15 +587,19 @@ hr {
   font-weight: 700;
 }
 
-.confirmSection div {
-  display: grid;
-  justify-content: right;
+.confirmSection {
+  position: relative;
+  height: 100px;
+}
+
+.confirmSection>div {
+  position: absolute;
+  right: 0;
 }
 
 .payBtn {
   width: 173px;
   height: 36px;
-  float: right;
   margin: 25px 0;
 }
 
@@ -639,14 +654,14 @@ hr {
   nav ul li {
     margin: auto;
   }
-  .bookingContent .bookingImg {
+  .bookingContent .bookingImgDiv {
     height: auto;
     width: 100%;
     display: flex;
     justify-content: center;
     margin: 0 0 20px 0;
   }
-  .bookingImg img {
+  .bookingImgDiv img {
     object-fit: cover;
     width: 100%;
   }

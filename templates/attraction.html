@@ -17,7 +17,7 @@
       <div class="navcontain">
         <a href="/" class="website_title">台北一日遊</a>
         <ul>
-          <li><a href="/booking">預定行程</a></li>
+          <li onclick="toBookingPage()">預定行程</li>
           <li onclick="loginDialog()" id="loginSignin">登入/註冊</li>
           <li onclick="logout()" id="logoutBtn">登出</li>
         </ul>
@@ -40,7 +40,7 @@
             <div>以此景點為中心的一日行程，帶您探索城市角落故事</div>
             <div>
               <span class="title">選擇日期：</span>
-              <input type="date">
+              <input type="date" id="bookingDate">
             </div>
             <div>
               <span class="title">選擇時間：</span>
@@ -54,7 +54,9 @@
               <span class="title">導覽費用：</span>
               <span>新台幣 <span id="price">2000</span> 元</span>
             </div>
-            <button class="bookBtn">開始預定行程</button>
+            <!-- <a href="/booking"> -->
+            <button class="bookBtn" onclick="startBooking('{{id}}')">開始預定行程</button>
+            <!-- </a> -->
           </div>
         </div>
       </div>
