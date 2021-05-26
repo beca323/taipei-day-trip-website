@@ -1,6 +1,8 @@
 # 載入Flask
 from flask import Flask, redirect, request, render_template, session, jsonify, json
 import mysql.connector
+import requests
+from datetime import date
 
 mydb = mysql.connector.connect(host='localhost',
                                user='root',
@@ -221,10 +223,76 @@ def api_delete():
     return {'ok': True}
 
 
-# @app.route('/logout')
-# def signout():
-#     session.pop('username', None)
-#     return redirect('/')
+@app.route('/api/orders', methods=['POST'])
+def orders_post():
+    orders = request.get_json()
+    data = {
+        'prime': orders['prime'],
+        'partner_key':
+        'partner_RZxcEx1SKG7yWXUf2XNAvvFXOA5FEo6TMLO6wIIdEpHR8NJ15ssCGW5U',
+        'merchant_id': 'tpattraction_CTBC',
+        'details': 'TapPay Test',
+        'amount': orders['order']['price'],
+        'cardholder': {
+            'phone_number': orders['order']['contact']['phone'],
+            'name': orders['order']['contact']['name'],
+            'email': orders['order']['contact']['email'],
+            # 'zip_code': '100',
+            # 'address': orders['order']['trip']['attraction']['address'],
+            # 'national_id': 'A123456789'
+        },
+        'remember': True
+    }
+    data = json.dumps(data).encode('utf8')
+    header = {
+        'Content-Type':
+        'application/json',
+        'x-api-key':
+        'partner_RZxcEx1SKG7yWXUf2XNAvvFXOA5FEo6TMLO6wIIdEpHR8NJ15ssCGW5U'
+    }
+    req = requests.post(
+        'https://sandbox.tappaysdk.com/tpc/payment/pay-by-prime',
+        data,
+        headers=header)
+    mycursor.execute('select max(order_number) from taipei_order')
+    maxOrder = mycursor.fetchall()
+    today = date.today()
+    d1 = today.strftime("%Y%m%d")
+    print('max', maxOrder[0][0])
+    print('d1', d1)
+    print(maxOrder[0][0] // 10000)
+    if int(d1) == maxOrder[0][0] // 10000:
+        order_number = maxOrder[0][0] + 1
+        print(order_number)
+    else:
+        order_number = d1 + '0001'
+        print(order_number)
+
+    # return req.json()
+
+    tappayResponse = req.json()
+
+    sql = 'INSERT INTO taipei_order (phone_number,name,email,amount,order_number,status,message) values (%s,%s,%s,%s,%s,%s,%s)'
+    val = (orders['order']['contact']['phone'],
+           orders['order']['contact']['name'],
+           orders['order']['contact']['email'], orders['order']['price'],
+           order_number, tappayResponse['status'], tappayResponse['msg'])
+    mycursor.execute(sql, val)
+    mydb.commit()
+
+    message = '未付款'
+    if tappayResponse['status'] == 0:
+        message = '付款成功'
+
+    ordersData = {
+        'number': str(order_number),
+        'payment': {
+            'status': tappayResponse['status'],
+            'message': message
+        }
+    }
+
+    return {'data': ordersData}
 
 
 @app.errorhandler(404)

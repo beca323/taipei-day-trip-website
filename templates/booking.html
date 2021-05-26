@@ -68,15 +68,15 @@
             <div class="title">您的聯絡資訊</div>
             <div class="field">
               <span>聯絡姓名：</span>
-              <input type="text">
+              <input type="text" class="booking_name">
             </div>
             <div class="field">
               <span>連絡信箱：</span>
-              <input type="text">
+              <input type="text" class="booking_email">
             </div>
             <div class="field">
               <span>手機號碼：</span>
-              <input type="text">
+              <input type="text" class="booking_phone">
             </div>
             <div class="field notice">
               請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。
@@ -91,19 +91,26 @@
             <div class="title">信用卡付款資訊</div>
             <div class="field">
               <span>卡片號碼：</span>
-              <input type="password" placeholder="**** **** **** ****">
+              <span>
+                <div class="tpfield" id="card-number"><span>.</span></div>
+              </span>
             </div>
             <div class="field">
               <span>過期時間：</span>
-              <input type="text" placeholder="MM/YY">
+              <span>
+                <div class="tpfield" id="card-expiration-date"><span>.</span></div>
+              </span>
             </div>
             <div class="field">
               <span>驗證密碼：</span>
-              <input type="text" placeholder="CVV">
+              <span>
+                <div class="tpfield" id="card-ccv"><span>.</span></div>
+              </span>
             </div>
           </div>
         </section>
       </div>
+
       <hr>
       <div class="content bookingContent">
         <section class="confirmSection blockSection">
@@ -112,7 +119,7 @@
               總價：新台幣 <span class="bookingPrice"></span> 元
             </div>
             <div>
-              <button class="payBtn">確認訂購並付款</button>
+              <button class="payBtn" onclick="onSubmit()">確認訂購並付款</button>
             </div>
           </div>
 
@@ -120,10 +127,8 @@
       </div>
     </div>
   </div>
-  </div>
-  <footer>
-    COPYRIGHT © 2021 台北一日遊
-  </footer>
+
+  <footer>COPYRIGHT © 2021 台北一日遊</footer>
   <div id="dialogContainer">
     <div class="dialog">
       <div id="closeBtn" onclick="closeBtn()">✕</div>
@@ -138,6 +143,107 @@
       <span id="toSignin" onclick="toSignin()">還沒有帳戶？點此註冊</span>
     </div>
   </div>
+  <script src="https://js.tappaysdk.com/tpdirect/v5.7.0"></script>
+
+  <script>
+    TPDirect.setupSDK(20392, 'app_7IWv7CwHO9JXE3fcpdC3Ee7P425Og2dbNJPaSdEV1QxjuSjmY8yJII3kHviY', 'sandbox')
+    TPDirect.card.setup({
+      fields: {
+        number: {
+          // css selector
+          element: '#card-number',
+          placeholder: '**** **** **** ****'
+        },
+        expirationDate: {
+          // DOM object
+          element: document.getElementById('card-expiration-date'),
+          placeholder: 'MM / YY'
+        },
+        ccv: {
+          element: '#card-ccv',
+          placeholder: 'ccv'
+        },
+      },
+      styles: {
+        // Style all elements
+        'input': {
+          'color': 'gray',
+        },
+        // Styling ccv field
+        'input.ccv': {
+          // 'font-size': '16px'
+        },
+        // Styling expiration-date field
+        'input.expiration-date': {
+          // 'font-size': '16px'
+        },
+        // Styling card-number field
+        'input.card-number': {
+          // 'font-size': '16px'
+        },
+        // style focus state
+        ':focus': {
+          // 'color': 'black'
+        },
+        // style valid state
+        '.valid': {
+          'color': 'green'
+        },
+        // style invalid state
+        '.invalid': {
+          'color': 'red'
+        },
+        // Media queries
+        // Note that these apply to the iframe, not the root window.
+        '@media screen and (max-width: 400px)': {
+          'input': {
+            'color': 'orange'
+          }
+        }
+      }
+    })
+    // TPDirect.card.onUpdate(function (update) {
+    //   // update.canGetPrime === true
+    //   // --> you can call TPDirect.card.getPrime()
+    //   if (update.canGetPrime) {
+    //     // Enable submit Button to get prime.
+    //     // submitButton.removeAttribute('disabled')
+    //   } else {
+    //     // Disable submit Button to get prime.
+    //     // submitButton.setAttribute('disabled', true)
+    //   }
+
+    //   // cardTypes = ['mastercard', 'visa', 'jcb', 'amex', 'unionpay','unknown']
+    //   if (update.cardType === 'visa') {
+    //     // Handle card type visa.
+    //   }
+
+    //   // number 欄位是錯誤的
+    //   if (update.status.number === 2) {
+    //     // setNumberFormGroupToError()
+    //   } else if (update.status.number === 0) {
+    //     // setNumberFormGroupToSuccess()
+    //   } else {
+    //     // setNumberFormGroupToNormal()
+    //   }
+
+    //   if (update.status.expiry === 2) {
+    //     // setNumberFormGroupToError()
+    //   } else if (update.status.expiry === 0) {
+    //     // setNumberFormGroupToSuccess()
+    //   } else {
+    //     // setNumberFormGroupToNormal()
+    //   }
+
+    //   if (update.status.ccv === 2) {
+    //     // setNumberFormGroupToError()
+    //   } else if (update.status.ccv === 0) {
+    //     // setNumberFormGroupToSuccess()
+    //   } else {
+    //     // setNumberFormGroupToNormal()
+    //   }
+    // })
+  </script>
 </body>
 
 </html>

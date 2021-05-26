@@ -201,6 +201,7 @@ function toBookingPage() {
   }
   req.send()
 }
+var tripInfo
 function getBookingInfo() {
   return new Promise((resolve, reject) => {
     let req = new XMLHttpRequest()
@@ -208,12 +209,13 @@ function getBookingInfo() {
     req.open('GET', urlname, true)
     req.onload = function () {
       let data = JSON.parse(this.responseText)
-      console.log(data)
+      tripInfo = data
+      // console.log(data)
       if (req.status == 403) {
-        console.log('status', req.status)
+        // console.log('status', req.status)
         window.location.href = url
       } else if (data.data == null) {
-        console.log('有登入，但 data = null')
+        // console.log('有登入，但 data = null')
         let allContent = document.getElementsByClassName('allContent')[0]
         allContent.innerHTML = '目前沒有任何待預定的行程'
         allContent.setAttribute('class', 'allContent allContentTxt')
@@ -221,7 +223,7 @@ function getBookingInfo() {
         wrapper.style.minHeight = '0'
         document.getElementsByTagName('footer')[0].setAttribute('class', 'footerHeight')
       } else {
-        console.log('有登入，有 data')
+        // console.log('有登入，有 data')
         document.getElementsByClassName('bookingImg')[0].src = data.data.attraction.image
         document.getElementsByClassName('bookingAddress')[0].innerHTML = data.data.attraction.address
         document.getElementsByClassName('bookingName')[0].innerHTML = data.data.attraction.name
@@ -277,7 +279,7 @@ function startBooking(id) {
   req.setRequestHeader('Content-type', 'application/json')
   req.onload = function () {
     let response = JSON.parse(this.responseText)
-    console.log(response)
+    // console.log(response)
     if (response.ok === true) {
       window.location.href = url + 'booking'
     } else {
@@ -294,9 +296,9 @@ function searchUsername() {
   req.onload = function () {
     let data = JSON.parse(this.responseText)
     if (data.data == null) {
-      console.log('未登入')
+      // console.log('未登入')
     } else {
-      console.log('已登入')
+      // console.log('已登入')
       document.querySelector('#logoutBtn').style.display = 'inline'
       document.querySelector('#loginSignin').style.display = 'none'
       if (document.getElementById('username')) {
@@ -324,7 +326,7 @@ function signup() {
   req.setRequestHeader('Content-type', 'application/json')
   req.onload = function () {
     response = this.responseText
-    console.log(response)
+    // console.log(response)
     if (req.status != 200) {
       message = JSON.parse(response).message
       addSignupResponse(message, 'warningTxt')
@@ -354,7 +356,7 @@ function signin() {
   req.send(data)
   req.onload = function () {
     response = this.responseText
-    console.log(response)
+    // console.log(response)
     if (req.status != 200) {
       message = JSON.parse(response).message
       addSignupResponse(message, 'warningTxt')
@@ -561,4 +563,107 @@ function howMuch() {
   } else {
     document.getElementById('price').innerHTML = 2500
   }
+}
+
+function getPrime() {
+  return new Promise((resolve, reject) => {
+
+    // event.preventDefault()
+
+    // 取得 TapPay Fields 的 status
+    const tappayStatus = TPDirect.card.getTappayFieldsStatus()
+
+    // 確認是否可以 getPrime
+    if (tappayStatus.canGetPrime === false) {
+      alert('can not get prime')
+      return
+    }
+
+    // Get prime
+    TPDirect.card.getPrime((result) => {
+      if (result.status !== 0) {
+        alert('get prime error ' + result.msg)
+        return
+      }
+      alert('get prime 成功，prime: ' + result.card.prime)
+      resolve(result.card.prime)
+      // send prime to your server, to pay with Pay by Prime API .
+      // Pay By Prime Docs: https://docs.tappaysdk.com/tutorial/zh/back.html#pay-by-prime-api
+    })
+  })
+}
+
+function onSubmit() {
+  let p = getPrime()
+  p.then((prime) => {
+
+    let req = new XMLHttpRequest()
+    let urlname = url + 'api/orders'
+    req.open('POST', urlname, true)
+    let data
+    data = {
+      'prime': prime,
+      'order': {
+        'price': tripInfo.data.price,
+        'trip': {
+          'attraction': tripInfo.data.attraction,
+          'date': tripInfo.data.date,
+          'time': tripInfo.data.time
+        },
+        'contact': {
+          'name': document.getElementsByClassName('booking_name')[0].value,
+          'email': document.getElementsByClassName('booking_email')[0].value,
+          'phone': document.getElementsByClassName('booking_phone')[0].value,
+        }
+      }
+    }
+    data = JSON.stringify(data)
+    req.setRequestHeader('Content-type', 'application/json')
+    req.onload = function () {
+      let response = JSON.parse(this.responseText)
+      // console.log(response)
+      if (response.data.payment.status === 0) {
+        window.location.href = url + 'thankyou?number=' + response.data.number
+      }
+      return response
+    }
+    req.send(data)
+  })
+}
+
+function thankyouOnload() {
+  let p = searchUsernameToIndex()
+  p.then(() => {
+    getOrderNumber()
+  })
+}
+
+function searchUsernameToIndex() {
+  return new Promise((resolve, reject) => {
+    let req = new XMLHttpRequest()
+    let urlname = url + 'api/user'
+    req.open('GET', urlname, true)
+    req.onload = function () {
+      let data = JSON.parse(this.responseText)
+      if (data.data == null) {
+        // console.log('未登入')
+        window.location.href = url
+      } else {
+        // console.log('已登入')
+        document.querySelector('#logoutBtn').style.display = 'inline'
+        document.querySelector('#loginSignin').style.display = 'none'
+        if (document.getElementById('username')) {
+          document.getElementById('username').innerHTML = data.data.name
+        }
+      }
+      resolve()
+    }
+    req.send()
+  })
+}
+
+function getOrderNumber() {
+  let myurl = location.href
+  let orderNumber = myurl.split('?number=')[1]
+  document.getElementsByClassName('orderNumber')[0].innerHTML = orderNumber
 }
