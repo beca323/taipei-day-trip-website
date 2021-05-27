@@ -575,17 +575,17 @@ function getPrime() {
 
     // 確認是否可以 getPrime
     if (tappayStatus.canGetPrime === false) {
-      alert('can not get prime')
+      alert('資料有誤。')
       return
     }
 
     // Get prime
     TPDirect.card.getPrime((result) => {
       if (result.status !== 0) {
-        alert('get prime error ' + result.msg)
+        alert('資料有誤。' + result.msg)
         return
       }
-      alert('get prime 成功，prime: ' + result.card.prime)
+      // alert('get prime 成功，prime: ' + result.card.prime)
       resolve(result.card.prime)
       // send prime to your server, to pay with Pay by Prime API .
       // Pay By Prime Docs: https://docs.tappaysdk.com/tutorial/zh/back.html#pay-by-prime-api
