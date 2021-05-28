@@ -675,3 +675,24 @@ hr {
     padding: 0 10px;
   }
 }
+
+/* tappay ?????? */
+
+.tpfield {
+  height: 36px;
+  width: 200px;
+  padding: 0 10px;
+  line-height: 34px;
+  border: #e8e8e8 1px solid;
+  border-radius: 5px;
+  display: inline-flex;
+}
+
+.tpfield span {
+  opacity: 0;
+  width: 0;
+}
+
+.thankyouPageTxt {
+  padding-left: 30px;
+}

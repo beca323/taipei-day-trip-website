@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="../css/style.css">
+  <script src="../js/script.js"></script>
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+  <title>台北一日遊</title>
+</head>
+
+<body onload="thankyouOnload()">
+  <div class="wrapper" id="wrapper">
+    <nav>
+      <div class="navcontain">
+        <a href="/" class="website_title">台北一日遊</a>
+        <ul>
+          <li onclick="toBookingPage()">預定行程</li>
+          <li onclick="loginDialog()" id="loginSignin">登入/註冊</li>
+          <li onclick="logout()" id="logoutBtn">登出</li>
+        </ul>
+      </div>
+    </nav>
+    <div class="fakenav"></div>
+    <div class="booktitle thankyouPageTxt">
+      訂購完成！
+      <br><br>
+      感謝您，預祝旅途愉快。
+      <br><br>
+      訂單編號：
+      <span class="orderNumber"></span>
+    </div>
+
+
+  </div>
+  <footer>COPYRIGHT © 2021 台北一日遊</footer>
+  <div id="dialogContainer">
+    <div class="dialog">
+      <div id="closeBtn" onclick="closeBtn()">✕</div>
+      <div class="dialogTitle">登入會員帳號</div>
+      <input type="text" name='username' id="getName" class="indexInput" placeholder="輸入姓名">
+      <input type="email" name='email' id="getEmail" class="indexInput" placeholder="輸入電子信箱">
+      <input type="password" name='password' id="getPassword" class="indexInput" placeholder="輸入密碼">
+      <div id="submitBtn">
+        <button class="loginBtn" onclick="signin()" name="submit" value="login">登入帳戶</button>
+        <button class="signupBtn" onclick="signup()" name="submit" value="signup">註冊帳戶</button>
+      </div>
+      <span id="toSignin" onclick="toSignin()">還沒有帳戶？點此註冊</span>
+    </div>
+  </div>
+
+
+</body>
+
+</html>

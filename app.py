@@ -1,6 +1,9 @@
 # 載入Flask
 from flask import Flask, redirect, request, render_template, session, jsonify, json
+import json
 import mysql.connector
+import requests
+from datetime import date
 
 mydb = mysql.connector.connect(host='localhost',
                                user='root',
@@ -118,7 +121,7 @@ def api_booking_get():
         imagesx1 = sqldata[0][3].split(',')
         bookingData = {
             'attraction': {
-                'id': attid,
+                'id': int(attid),
                 'name': sqldata[0][1],
                 'address': sqldata[0][2],
                 'image': imagesx1[0]
@@ -221,10 +224,106 @@ def api_delete():
     return {'ok': True}
 
 
-# @app.route('/logout')
-# def signout():
-#     session.pop('username', None)
-#     return redirect('/')
+@app.route('/api/orders', methods=['POST'])
+def orders_post():
+    orders = request.get_json()
+    data = {
+        'prime': orders['prime'],
+        'partner_key':
+        'partner_RZxcEx1SKG7yWXUf2XNAvvFXOA5FEo6TMLO6wIIdEpHR8NJ15ssCGW5U',
+        'merchant_id': 'tpattraction_CTBC',
+        'details': 'TapPay Test',
+        'amount': orders['order']['price'],
+        'cardholder': {
+            'phone_number': orders['order']['contact']['phone'],
+            'name': orders['order']['contact']['name'],
+            'email': orders['order']['contact']['email'],
+        },
+        'remember': True
+    }
+    data = json.dumps(data).encode('utf8')
+    header = {
+        'Content-Type':
+        'application/json',
+        'x-api-key':
+        'partner_RZxcEx1SKG7yWXUf2XNAvvFXOA5FEo6TMLO6wIIdEpHR8NJ15ssCGW5U'
+    }
+    req = requests.post(
+        'https://sandbox.tappaysdk.com/tpc/payment/pay-by-prime',
+        data,
+        headers=header)
+    mycursor.execute('select max(order_number) from taipei_order')
+    maxOrder = mycursor.fetchall()
+    today = date.today()
+    d1 = today.strftime("%Y%m%d")
+    # print('max', maxOrder[0][0])
+    # print('d1', d1)
+    # print(maxOrder[0][0] // 10000)
+    if int(d1) == maxOrder[0][0] // 10000:
+        order_number = maxOrder[0][0] + 1
+        # print(order_number)
+    else:
+        order_number = d1 + '0001'
+        # print(order_number)
+
+    # return req.json()
+
+    tappayResponse = req.json()
+
+    # sql = 'INSERT INTO taipei_order (phone_number,name,email,amount,order_number,status,message) values (%s,%s,%s,%s,%s,%s,%s)'
+    # val = (orders['order']['contact']['phone'],
+    #        orders['order']['contact']['name'],
+    #        orders['order']['contact']['email'], orders['order']['price'],
+    #        order_number, tappayResponse['status'], tappayResponse['msg'])
+    # mycursor.execute(sql, val)
+    # mydb.commit()
+
+    # 存 trip, contact 到 mysql
+    sql = 'INSERT INTO taipei_order (amount,order_number,status,message,trip,contact) values (%s,%s,%s,%s,%s,%s)'
+    val = (orders['order']['price'], order_number, tappayResponse['status'],
+           tappayResponse['msg'], str(orders['order']['trip']),
+           str(orders['order']['contact']))
+    mycursor.execute(sql, val)
+    mydb.commit()
+
+    ###########################
+
+    message = '未付款'
+    if tappayResponse['status'] == 0:
+        message = '付款成功'
+
+    ordersData = {
+        'number': str(order_number),
+        'payment': {
+            'status': tappayResponse['status'],
+            'message': message
+        }
+    }
+
+    return {'data': ordersData}
+
+
+@app.route('/api/order/<orderNumber>', methods=['GET'])
+def order_get(orderNumber):
+    sql = 'SELECT * FROM taipei_order WHERE order_number = (%s)'
+    val = (orderNumber, )
+    mycursor.execute(sql, val)
+    sqldata = mycursor.fetchall()
+    # print(sqldata)
+    trip = sqldata[0][5].replace('\'', '\"')
+    trip = json.loads(trip)
+    contact = sqldata[0][6].replace('\'', '\"')
+    contact = json.loads(contact)
+    orderData = {
+        'data': {
+            'number': str(sqldata[0][2]),
+            'price': sqldata[0][1],
+            'trip': trip,
+            'contact': contact,
+            'status': 1
+        }
+    }
+    return orderData
 
 
 @app.errorhandler(404)
