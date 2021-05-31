@@ -1,8 +1,8 @@
 var nextPage = 0
 var keyword = ''
-// var url = 'http://0.0.0.0:3000/'
+var url = 'http://0.0.0.0:3000/'
 // var url = 'http://127.0.0.1:3000/'
-var url = 'http://18.182.195.43:3000/'
+// var url = 'http://18.182.195.43:3000/'
 var nextPic = []
 function getData() {
   return new Promise((resolve, reject) => {
@@ -183,8 +183,13 @@ function indexOnload() {
 function bookingOnload() {
   let p = getBookingInfo()
   p.then(function () {
+    showBookingContent()
     searchUsername()
   })
+}
+
+function showBookingContent() {
+  document.getElementsByClassName('allContent')[0].style.opacity = '1'
 }
 function toBookingPage() {
   let req = new XMLHttpRequest()

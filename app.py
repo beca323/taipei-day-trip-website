@@ -309,7 +309,6 @@ def order_get(orderNumber):
     val = (orderNumber, )
     mycursor.execute(sql, val)
     sqldata = mycursor.fetchall()
-    # print(sqldata)
     trip = sqldata[0][5].replace('\'', '\"')
     trip = json.loads(trip)
     contact = sqldata[0][6].replace('\'', '\"')
