@@ -5,7 +5,16 @@ import mysql.connector
 import requests
 from datetime import date
 
-mydb = mysql.connector.connect(host='localhost',
+# mydb = mysql.connector.connect(host='localhost',
+#                                user='root',
+#                                password='password',
+#                                database='website')
+
+# mycursor = mydb.cursor()
+
+mydb = mysql.connector.connect(pool_name="mypool",
+                               pool_size=32,
+                               host='localhost',
                                user='root',
                                password='password',
                                database='website')
