@@ -212,7 +212,7 @@ def api_post():
             sql = 'INSERT INTO taipei_user (name, email, password) VALUES (%s, %s, %s)'
             val = (user['name'], user['email'], user['password'])
             mycursor.execute(sql, val)
-            mydb.commit()
+            db.commit()
             return {'ok': True}
 
 
@@ -298,7 +298,7 @@ def orders_post():
            tappayResponse['msg'], str(orders['order']['trip']),
            str(orders['order']['contact']))
     mycursor.execute(sql, val)
-    mydb.commit()
+    db.commit()
 
     ###########################
 
