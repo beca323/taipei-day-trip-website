@@ -181,11 +181,19 @@ function indexOnload() {
   })
 }
 function bookingOnload() {
-  let p = getBookingInfo()
+  let p = searchUsernameToIndex()
   p.then(function () {
-    showBookingContent()
-    searchUsername()
+    let p2 = getBookingInfo()
+    p2.then(function () {
+      showBookingContent()
+    })
   })
+
+  // let p = getBookingInfo()
+  // p.then(function () {
+  //   showBookingContent()
+  //   searchUsername()
+  // })
 }
 
 function showBookingContent() {
@@ -219,6 +227,7 @@ function getBookingInfo() {
       if (req.status == 403) {
         // console.log('status', req.status)
         window.location.href = url
+        reject()
       } else if (data.data == null) {
         // console.log('有登入，但 data = null')
         let allContent = document.getElementsByClassName('allContent')[0]
