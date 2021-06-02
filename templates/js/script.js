@@ -318,6 +318,7 @@ function signup() {
   username = document.querySelector('#getName')
   email = document.querySelector('#getEmail')
   password = document.querySelector('#getPassword')
+  checkSignupInputData(username.value, email.value, password.value)
   let req = new XMLHttpRequest()
   let urlname = url + 'api/user'
   req.open('POST', urlname, true)
@@ -342,6 +343,10 @@ function signup() {
     }
   }
   req.send(data)
+}
+
+function checkSignupInputData() {
+
 }
 
 function signin() {

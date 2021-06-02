@@ -2,8 +2,13 @@
 from flask import Flask, redirect, request, render_template, session, jsonify, json
 import json
 import mysql.connector
+from mysql.connector import pooling
 import requests
 from datetime import date
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # mydb = mysql.connector.connect(host='localhost',
 #                                user='root',
@@ -12,14 +17,17 @@ from datetime import date
 
 # mycursor = mydb.cursor()
 
-mydb = mysql.connector.connect(pool_name="mypool",
-                               pool_size=32,
-                               host='localhost',
-                               user='root',
-                               password='password',
-                               database='website')
+mydb = mysql.connector.pooling.MySQLConnectionPool(
+    pool_name="mypool",
+    pool_size=10,
+    host='localhost',
+    user=os.getenv('mysqlUsername'),
+    password=os.getenv('mysqlPassword'),
+    database='website')
 
-mycursor = mydb.cursor()
+# mycursor = mydb.cursor()
+db = mydb.get_connection()
+mycursor = db.cursor()
 
 app = Flask(__name__, static_folder='templates', static_url_path='/')
 app.config["JSON_AS_ASCII"] = False
@@ -238,8 +246,7 @@ def orders_post():
     orders = request.get_json()
     data = {
         'prime': orders['prime'],
-        'partner_key':
-        'partner_RZxcEx1SKG7yWXUf2XNAvvFXOA5FEo6TMLO6wIIdEpHR8NJ15ssCGW5U',
+        'partner_key': os.getenv('partnerKey'),
         'merchant_id': 'tpattraction_CTBC',
         'details': 'TapPay Test',
         'amount': orders['order']['price'],
@@ -252,10 +259,8 @@ def orders_post():
     }
     data = json.dumps(data).encode('utf8')
     header = {
-        'Content-Type':
-        'application/json',
-        'x-api-key':
-        'partner_RZxcEx1SKG7yWXUf2XNAvvFXOA5FEo6TMLO6wIIdEpHR8NJ15ssCGW5U'
+        'Content-Type': 'application/json',
+        'x-api-key': os.getenv('xapikey')
     }
     req = requests.post(
         'https://sandbox.tappaysdk.com/tpc/payment/pay-by-prime',
