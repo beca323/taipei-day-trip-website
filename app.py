@@ -10,13 +10,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# mydb = mysql.connector.connect(host='localhost',
-#                                user='root',
-#                                password='password',
-#                                database='website')
-
-# mycursor = mydb.cursor()
-
 mydb = mysql.connector.pooling.MySQLConnectionPool(
     pool_name="mypool",
     pool_size=10,
@@ -26,8 +19,15 @@ mydb = mysql.connector.pooling.MySQLConnectionPool(
     database='website')
 
 # mycursor = mydb.cursor()
-db = mydb.get_connection()
-mycursor = db.cursor()
+# db = mydb.get_connection()
+# mycursor = db.cursor()
+
+# mydb = mysql.connector.connect(host='localhost',
+#                                user='root',
+#                                password='password',
+#                                database='website')
+
+# mycursor = mydb.cursor()
 
 app = Flask(__name__, static_folder='templates', static_url_path='/')
 app.config["JSON_AS_ASCII"] = False
@@ -68,6 +68,8 @@ def attractions():
     dataNumPage = 12
     sql = 'SELECT * FROM (SELECT _id,stitle,CAT2,xbody,address,info,MRT,latitude,longitude,file FROM taipei WHERE stitle like %s order by _id  ) as a LIMIT %s,%s'
     val = (keyword, datafrom, dataNumPage)
+    db = mydb.get_connection()
+    mycursor = db.cursor()
     mycursor.execute(sql, val)
     sqldata = mycursor.fetchall()
     myresult = [''] * (len(sqldata))
@@ -94,6 +96,7 @@ def attractions():
     if sqldata == []:
         nextPage = None
     # ---------------
+    db.close()
     return {'nextPage': nextPage, 'data': myresult}
 
 
@@ -101,6 +104,8 @@ def attractions():
 def attractionsID(attractionid):
     sql = 'SELECT _id,stitle,CAT2,xbody,address,info,MRT,latitude,longitude,file FROM taipei WHERE _id=%s'
     val = (attractionid, )
+    db = mydb.get_connection()
+    mycursor = db.cursor()
     mycursor.execute(sql, val)
     sqldata = mycursor.fetchall()
     myresult = ['']
@@ -117,6 +122,7 @@ def attractionsID(attractionid):
         'longitude': sqldata[0][8],
         'images': [imagesx1]
     }
+    db.close()
     return {'data': myresult}
 
 
@@ -133,6 +139,10 @@ def api_booking_get():
         attid = session.get('booking')['attractionId']
         sql = 'SELECT _id,stitle,address,file FROM taipei WHERE _id = %s'
         val = (attid, )
+
+        db = mydb.get_connection()
+        mycursor = db.cursor()
+
         mycursor.execute(sql, val)
         sqldata = mycursor.fetchall()
         imagesx1 = sqldata[0][3].split(',')
@@ -147,6 +157,7 @@ def api_booking_get():
             'time': session.get('booking')['time'],
             'price': session.get('booking')['price']
         }
+        db.close()
         return {'data': bookingData}
     else:
         return {'data': None}
@@ -176,6 +187,10 @@ def api_booking_delete():
 @app.route('/api/user', methods=['GET'])
 def api_get():
     username = session.get('username', '')
+
+    db = mydb.get_connection()
+    mycursor = db.cursor()
+
     mycursor.execute('SELECT * FROM taipei_user WHERE name = "' + username +
                      '"')
     myresult = mycursor.fetchall()
@@ -187,18 +202,22 @@ def api_get():
             'name': myresult[0][1],
             'email': myresult[0][3],
         }
+    db.close()
     return {'data': userfound}
 
 
 @app.route('/api/user', methods=['POST'])
 def api_post():
     user = request.get_json()
+    db = mydb.get_connection()
+    mycursor = db.cursor()
     if (user['name'].find(' ') != -1 or user['email'].find(' ') != -1
             or user['password'].find(' ') != -1 or user['name'] == ''
             or user['email'] == '' or user['password'] == ''):
         errorResponse = {'error': True, 'message': '註冊失敗'}
         return (errorResponse, 400)
     else:
+
         mycursor.execute('SELECT email FROM taipei_user WHERE email = "' +
                          user['email'] + '"')
         myresult = mycursor.fetchall()
@@ -214,10 +233,13 @@ def api_post():
             mycursor.execute(sql, val)
             db.commit()
             return {'ok': True}
+    db.close()
 
 
 @app.route('/api/user', methods=['PATCH'])
 def api_patch():
+    db = mydb.get_connection()
+    mycursor = db.cursor()
     user = request.get_json()
     sql = 'SELECT * FROM taipei_user WHERE email = %s AND password = %s'
     val = (user['email'], user['password'])
@@ -233,6 +255,7 @@ def api_patch():
         session['email'] = myresult[0][3]
         session['password'] = myresult[0][4]
         return {'ok': True}
+    db.close()
 
 
 @app.route('/api/user', methods=['DELETE'])
@@ -266,6 +289,10 @@ def orders_post():
         'https://sandbox.tappaysdk.com/tpc/payment/pay-by-prime',
         data,
         headers=header)
+
+    db = mydb.get_connection()
+    mycursor = db.cursor()
+
     mycursor.execute('select max(order_number) from taipei_order')
     maxOrder = mycursor.fetchall()
     today = date.today()
@@ -314,11 +341,15 @@ def orders_post():
         }
     }
 
+    db.close()
     return {'data': ordersData}
 
 
 @app.route('/api/order/<orderNumber>', methods=['GET'])
 def order_get(orderNumber):
+    db = mydb.get_connection()
+    mycursor = db.cursor()
+
     sql = 'SELECT * FROM taipei_order WHERE order_number = (%s)'
     val = (orderNumber, )
     mycursor.execute(sql, val)
@@ -336,6 +367,7 @@ def order_get(orderNumber):
             'status': 1
         }
     }
+    db.close()
     return orderData
 
 

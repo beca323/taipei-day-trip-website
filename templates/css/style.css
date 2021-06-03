@@ -499,7 +499,16 @@ hr {
 
 /* BOOKING.HTML */
 
-.allContent {
+.loading {
+  display: flex;
+  justify-content: center;
+}
+
+.loading .loadingGif {
+  height: 300px;
+}
+
+.allContent, .bookingbooktitle {
   opacity: 0;
 }
 

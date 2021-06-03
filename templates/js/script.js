@@ -186,6 +186,7 @@ function bookingOnload() {
     let p2 = getBookingInfo()
     p2.then(function () {
       showBookingContent()
+      hideLoadingGif()
     })
   })
 
@@ -196,8 +197,13 @@ function bookingOnload() {
   // })
 }
 
+
+function hideLoadingGif() {
+  document.getElementsByClassName('loading')[0].style.display = 'none'
+}
 function showBookingContent() {
   document.getElementsByClassName('allContent')[0].style.opacity = '1'
+  document.getElementsByClassName('bookingbooktitle')[0].style.opacity = '1'
 }
 function toBookingPage() {
   let req = new XMLHttpRequest()
