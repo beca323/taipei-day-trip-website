@@ -181,10 +181,29 @@ function indexOnload() {
   })
 }
 function bookingOnload() {
-  let p = getBookingInfo()
+  let p = searchUsernameToIndex()
   p.then(function () {
-    searchUsername()
+    let p2 = getBookingInfo()
+    p2.then(function () {
+      showBookingContent()
+      hideLoadingGif()
+    })
   })
+
+  // let p = getBookingInfo()
+  // p.then(function () {
+  //   showBookingContent()
+  //   searchUsername()
+  // })
+}
+
+
+function hideLoadingGif() {
+  document.getElementsByClassName('loading')[0].style.display = 'none'
+}
+function showBookingContent() {
+  document.getElementsByClassName('allContent')[0].style.opacity = '1'
+  document.getElementsByClassName('bookingbooktitle')[0].style.opacity = '1'
 }
 function toBookingPage() {
   let req = new XMLHttpRequest()
@@ -214,6 +233,7 @@ function getBookingInfo() {
       if (req.status == 403) {
         // console.log('status', req.status)
         window.location.href = url
+        reject()
       } else if (data.data == null) {
         // console.log('有登入，但 data = null')
         let allContent = document.getElementsByClassName('allContent')[0]
@@ -313,6 +333,7 @@ function signup() {
   username = document.querySelector('#getName')
   email = document.querySelector('#getEmail')
   password = document.querySelector('#getPassword')
+  checkSignupInputData(username.value, email.value, password.value)
   let req = new XMLHttpRequest()
   let urlname = url + 'api/user'
   req.open('POST', urlname, true)
@@ -337,6 +358,10 @@ function signup() {
     }
   }
   req.send(data)
+}
+
+function checkSignupInputData() {
+
 }
 
 function signin() {
